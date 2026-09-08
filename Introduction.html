@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Introduction to Data Analytics</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f5f7fb;
+        color: #1f2937;
+        line-height: 1.6;
+    }
+
+    header {
+        background: #111827;
+        color: white;
+        padding: 50px 8%;
+    }
+
+    header h1 {
+        font-size: 42px;
+        margin-bottom: 10px;
+    }
+
+    header p {
+        font-size: 19px;
+        color: #d1d5db;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: auto;
+        padding: 30px 20px 80px;
+    }
+
+    section {
+        background: white;
+        margin: 25px 0;
+        padding: 35px;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    h2 {
+        font-size: 30px;
+        margin-top: 0;
+        color: #111827;
+    }
+
+    h3 {
+        color: #374151;
+        margin-top: 25px;
+    }
+
+    .time {
+        display: inline-block;
+        background: #e5e7eb;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+
+    .highlight {
+        background: #f3f4f6;
+        padding: 20px;
+        border-left: 5px solid #111827;
+        margin: 20px 0;
+        border-radius: 6px;
+    }
+
+    .big-question {
+        font-size: 25px;
+        font-weight: bold;
+        margin: 20px 0;
+    }
+
+    .flow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        margin: 25px 0;
+    }
+
+    .flow-item {
+        padding: 15px 20px;
+        background: #e5e7eb;
+        border-radius: 10px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .arrow {
+        font-size: 25px;
+        font-weight: bold;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+        margin-top: 20px;
+    }
+
+    .card {
+        padding: 22px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+    }
+
+    .card h3 {
+        margin-top: 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    th, td {
+        border: 1px solid #e5e7eb;
+        padding: 12px;
+        text-align: left;
+    }
+
+    th {
+        background: #f3f4f6;
+    }
+
+    code {
+        background: #f3f4f6;
+        padding: 3px 6px;
+        border-radius: 4px;
+    }
+
+    pre {
+        background: #111827;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        overflow-x: auto;
+    }
+
+    .exercise {
+        background: #fefce8;
+        border: 1px solid #fde68a;
+        padding: 25px;
+        border-radius: 12px;
+        margin-top: 20px;
+    }
+
+    .answer {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 15px;
+    }
+
+    .important {
+        font-weight: bold;
+    }
+
+    .timeline {
+        border-left: 4px solid #9ca3af;
+        padding-left: 25px;
+    }
+
+    .timeline-item {
+        margin-bottom: 25px;
+    }
+
+    footer {
+        text-align: center;
+        padding: 40px;
+        color: #6b7280;
+    }
+
+    @media(max-width:600px) {
+        header h1 {
+            font-size: 32px;
+        }
+
+        section {
+            padding: 25px 20px;
+        }
+
+        .flow {
+            flex-direction: column;
+        }
+
+        .arrow {
+            transform: rotate(90deg);
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        <h1>Introduction to Data Analytics</h1>
+        <p>Understanding Data Analytics, Business Problems, KPIs, Metrics, Stakeholders & the Analytics Lifecycle</p>
+        <p><strong>Duration:</strong> 2 Hours</p>
+    </div>
+</header>
+
+<div class="container">
+
+<!-- LEARNING OBJECTIVES -->
+
+<section>
+    <h2>🎯 Learning Objectives</h2>
+
+    <p>By the end of this session, you should be able to:</p>
+
+    <ul>
+        <li>Understand what Data Analytics means.</li>
+        <li>Understand why businesses use analytics.</li>
+        <li>Understand the analytics lifecycle.</li>
+        <li>Identify different types of analytics.</li>
+        <li>Understand common analytics tools and career opportunities.</li>
+        <li>Understand KPIs, metrics, dimensions and measures.</li>
+        <li>Identify business stakeholders.</li>
+        <li>Convert business problems into analytical questions.</li>
+        <li>Explore the Sample Superstore dataset.</li>
+        <li>Create useful business questions from data.</li>
+    </ul>
+</section>
+
+
+<!-- PART 1 -->
+
+<section>
+    <span class="time">0:00 – 0:10 | 10 Minutes</span>
+
+    <h2>1. What is Data Analytics?</h2>
+
+    <p>
+        Data Analytics is the process of examining data to find useful
+        information, patterns and insights that help people make better decisions.
+    </p>
+
+    <div class="big-question">
+        A company has ₹100 crore in sales. Is that good?
+    </div>
+
+    <p>We cannot answer immediately.</p>
+
+    <p>We need more information:</p>
+
+    <ul>
+        <li>What were sales last year?</li>
+        <li>What was the sales target?</li>
+        <li>How much profit was generated?</li>
+        <li>Which products generated the sales?</li>
+        <li>Which regions generated the sales?</li>
+        <li>Did discounts increase?</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Key idea:</strong><br>
+        Data becomes valuable when it helps us understand a business problem
+        and make a better decision.
+    </div>
+
+    <div class="flow">
+        <div class="flow-item">Data</div>
+        <div class="arrow">→</div>
+        <div class="flow-item">Information</div>
+        <div class="arrow">→</div>
+        <div class="flow-item">Insight</div>
+        <div class="arrow">→</div>
+        <div class="flow-item">Decision</div>
+        <div class="arrow">→</div>
+        <div class="flow-item">Action</div>
+    </div>
+</section>
+
+
+<!-- EXAMPLE -->
+
+<section>
+    <h2>Business Example</h2>
+
+    <p>Imagine an e-commerce company has the following results:</p>
+
+    <table>
+        <tr>
+            <th>Metric</th>
+            <th>Change</th>
+        </tr>
+        <tr>
+            <td>Revenue</td>
+            <td>↑ 30%</td>
+        </tr>
+        <tr>
+            <td>Orders</td>
+            <td>↑ 25%</td>
+        </tr>
+        <tr>
+            <td>Customers</td>
+            <td>↑ 15%</td>
+        </tr>
+        <tr>
+            <td>Profit</td>
+            <td>↓ 10%</td>
+        </tr>
+    </table>
+
+    <div class="highlight">
+        <strong>Analytical question:</strong>
+        Why did profit decrease even though revenue increased?
+    </div>
+
+    <p>
+        An analyst should not stop at reporting the numbers.
+        The analyst should investigate the reason behind them.
+    </p>
+</section>
+
+
+<!-- TYPES -->
+
+<section>
+    <span class="time">0:10 – 0:30 | 20 Minutes</span>
+
+    <h2>2. Types of Data Analytics</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>1. Descriptive</h3>
+            <p><strong>Question:</strong> What happened?</p>
+            <p>Example: Sales decreased by 8%.</p>
+        </div>
+
+        <div class="card">
+            <h3>2. Diagnostic</h3>
+            <p><strong>Question:</strong> Why did it happen?</p>
+            <p>Example: Sales decreased because the West region declined.</p>
+        </div>
+
+        <div class="card">
+            <h3>3. Predictive</h3>
+            <p><strong>Question:</strong> What might happen?</p>
+            <p>Example: Sales may decline next month.</p>
+        </div>
+
+        <div class="card">
+            <h3>4. Prescriptive</h3>
+            <p><strong>Question:</strong> What should we do?</p>
+            <p>Example: Increase promotions for high-performing products.</p>
+        </div>
+
+    </div>
+
+    <div class="highlight">
+        <strong>Remember:</strong>
+        <br><br>
+        Descriptive → What happened?<br>
+        Diagnostic → Why?<br>
+        Predictive → What might happen?<br>
+        Prescriptive → What should we do?
+    </div>
+</section>
+
+
+<!-- LIFECYCLE -->
+
+<section>
+    <span class="time">0:30 – 0:40 | 10 Minutes</span>
+
+    <h2>3. Analytics Lifecycle</h2>
+
+    <div class="flow">
+
+        <div class="flow-item">Business Problem</div>
+        <div class="arrow">→</div>
+
+        <div class="flow-item">Data Collection</div>
+        <div class="arrow">→</div>
+
+        <div class="flow-item">Data Understanding</div>
+        <div class="arrow">→</div>
+
+        <div class="flow-item">Data Cleaning</div>
+        <div class="arrow">→</div>
+
+        <div class="flow-item">Analysis</div>
+        <div class="arrow">→</div>
+
+        <div class="flow-item">Visualization</div>
+        <div class="arrow">→</div>
+
+        <div class="flow-item">Insight</div>
+        <div class="arrow">→</div>
+
+        <div class="flow-item">Decision</div>
+
+    </div>
+
+    <div class="highlight">
+        <strong>Important:</strong>
+        Analytics does NOT start with Power BI, Excel, SQL or Python.
+        <br><br>
+        It starts with understanding the business problem.
+    </div>
+</section>
+
+
+<!-- TOOLS -->
+
+<section>
+    <span class="time">0:40 – 0:50 | 10 Minutes</span>
+
+    <h2>4. Data Analytics Tools</h2>
+
+    <table>
+        <tr>
+            <th>Tool</th>
+            <th>Common Usage</th>
+        </tr>
+
+        <tr>
+            <td>Excel</td>
+            <td>Quick analysis, calculations, Pivot Tables</td>
+        </tr>
+
+        <tr>
+            <td>SQL</td>
+            <td>Querying, filtering, joining and aggregating data</td>
+        </tr>
+
+        <tr>
+            <td>Python</td>
+            <td>Data cleaning, automation and advanced analysis</td>
+        </tr>
+
+        <tr>
+            <td>Power BI / Tableau</td>
+            <td>Dashboards and visualization</td>
+        </tr>
+
+        <tr>
+            <td>Databricks / Snowflake / BigQuery</td>
+            <td>Large-scale data processing and analytics</td>
+        </tr>
+    </table>
+</section>
+
+
+<!-- CAREERS -->
+
+<section>
+    <h2>5. Data Analytics Career Opportunities</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>Data Analyst</h3>
+            <p>Analyzes data and provides business insights.</p>
+        </div>
+
+        <div class="card">
+            <h3>Business Analyst</h3>
+            <p>Focuses strongly on business requirements and processes.</p>
+        </div>
+
+        <div class="card">
+            <h3>Product Analyst</h3>
+            <p>Uses data to understand product and customer behaviour.</p>
+        </div>
+
+        <div class="card">
+            <h3>Analytics Engineer</h3>
+            <p>Builds reliable analytical datasets and transformations.</p>
+        </div>
+
+        <div class="card">
+            <h3>Data Engineer</h3>
+            <p>Builds systems and pipelines that make data available.</p>
+        </div>
+
+        <div class="card">
+            <h3>Data Scientist</h3>
+            <p>Uses statistics and machine learning for complex problems.</p>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- BUSINESS UNDERSTANDING -->
+
+<section>
+    <span class="time">0:50 – 1:00 | 10 Minutes</span>
+
+    <h2>6. Understanding Business Problems</h2>
+
+    <div class="big-question">
+        "Sales are low."
+    </div>
+
+    <p>Is this a good analytical problem?</p>
+
+    <p><strong>No.</strong> It is too vague.</p>
+
+    <p>We need to ask:</p>
+
+    <ul>
+        <li>Compared with what?</li>
+        <li>Which period?</li>
+        <li>Which region?</li>
+        <li>Which products?</li>
+        <li>Which customers?</li>
+        <li>How much below target?</li>
+        <li>Why does this matter to the business?</li>
+    </ul>
+
+    <div class="highlight">
+        <strong>Better business problem:</strong>
+        <br><br>
+        "Quarterly revenue is 15% below target. Management wants to
+        understand which regions and product categories are responsible."
+    </div>
+</section>
+
+
+<!-- KPI -->
+
+<section>
+    <span class="time">1:00 – 1:10 | 10 Minutes</span>
+
+    <h2>7. KPI, Metrics & Dimensions</h2>
+
+    <h3>What is a KPI?</h3>
+
+    <p>
+        KPI stands for <strong>Key Performance Indicator</strong>.
+        It measures performance against an important business objective.
+    </p>
+
+    <p>Examples:</p>
+
+    <ul>
+        <li>Revenue Growth</li>
+        <li>Profit Margin</li>
+        <li>Customer Retention</li>
+        <li>Conversion Rate</li>
+        <li>Return on Equity (ROE)</li>
+    </ul>
+
+    <h3>What is a Metric?</h3>
+
+    <p>
+        A metric is a measurable value.
+    </p>
+
+    <p>
+        Examples: Sales, Profit, Orders, Customers, Quantity.
+    </p>
+
+    <h3>What is a Dimension?</h3>
+
+    <p>
+        A dimension is a way to slice or categorize data.
+    </p>
+
+    <p>
+        Examples: Region, Product, Customer, Category, Date.
+    </p>
+
+    <div class="highlight">
+        <strong>Easy way to remember:</strong>
+        <br><br>
+        Metrics tell you <strong>WHAT</strong>.
+        <br>
+        Dimensions tell you <strong>BY WHAT</strong>.
+    </div>
+
+    <p>For example:</p>
+
+    <pre>Sales by Region
+Sales by Category
+Sales by Customer
+Sales by Month</pre>
+</section>
+
+
+<!-- SUPERSTORE -->
+
+<section>
+    <span class="time">1:10 – 1:30 | 20 Minutes</span>
+
+    <h2>8. Sample Superstore Dataset</h2>
+
+    <p>
+        The Superstore dataset represents sales transactions from a retail business.
+    </p>
+
+    <h3>Common Columns</h3>
+
+    <table>
+        <tr>
+            <th>Column</th>
+            <th>Type</th>
+        </tr>
+
+        <tr>
+            <td>Order ID</td>
+            <td>Identifier</td>
+        </tr>
+
+        <tr>
+            <td>Order Date</td>
+            <td>Date</td>
+        </tr>
+
+        <tr>
+            <td>Customer</td>
+            <td>Dimension</td>
+        </tr>
+
+        <tr>
+            <td>Region</td>
+            <td>Dimension</td>
+        </tr>
+
+        <tr>
+            <td>Category</td>
+            <td>Dimension</td>
+        </tr>
+
+        <tr>
+            <td>Product</td>
+            <td>Dimension</td>
+        </tr>
+
+        <tr>
+            <td>Sales</td>
+            <td>Measure</td>
+        </tr>
+
+        <tr>
+            <td>Quantity</td>
+            <td>Measure</td>
+        </tr>
+
+        <tr>
+            <td>Discount</td>
+            <td>Measure</td>
+        </tr>
+
+        <tr>
+            <td>Profit</td>
+            <td>Measure</td>
+        </tr>
+    </table>
+
+    <h3>Example Transaction</h3>
+
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Region</th>
+            <th>Category</th>
+            <th>Sales</th>
+            <th>Quantity</th>
+            <th>Profit</th>
+        </tr>
+
+        <tr>
+            <td>Jan 5</td>
+            <td>South</td>
+            <td>Technology</td>
+            <td>₹50,000</td>
+            <td>2</td>
+            <td>₹8,000</td>
+        </tr>
+    </table>
+</section>
+
+
+<!-- DATA EXPLORATION -->
+
+<section>
+    <span class="time">1:30 – 1:40 | 10 Minutes</span>
+
+    <h2>9. Explore the Dataset</h2>
+
+    <h3>Identify Dimensions</h3>
+
+    <div class="grid">
+
+        <div class="card">Region</div>
+        <div class="card">Category</div>
+        <div class="card">Sub-Category</div>
+        <div class="card">Customer</div>
+        <div class="card">Segment</div>
+        <div class="card">Product</div>
+        <div class="card">Date</div>
+
+    </div>
+
+    <h3>Identify Measures</h3>
+
+    <div class="grid">
+
+        <div class="card">Sales</div>
+        <div class="card">Quantity</div>
+        <div class="card">Profit</div>
+        <div class="card">Discount</div>
+
+    </div>
+
+    <div class="exercise">
+        <strong>Think:</strong>
+
+        <p>
+            Can you calculate total sales?
+        </p>
+
+        <p>
+            Can you calculate sales by region?
+        </p>
+
+        <p>
+            Can you calculate average sales?
+        </p>
+
+        <p>
+            Can you calculate profit margin?
+        </p>
+
+        <div class="answer">
+            <strong>Profit Margin = Profit ÷ Sales</strong>
+        </div>
+    </div>
+</section>
+
+
+<!-- STAKEHOLDERS -->
+
+<section>
+    <span class="time">1:40 – 1:50 | 10 Minutes</span>
+
+    <h2>10. Who Uses Analytics?</h2>
+
+    <p>
+        The same dataset can answer different questions depending on
+        who is asking.
+    </p>
+
+    <table>
+        <tr>
+            <th>Stakeholder</th>
+            <th>Possible Question</th>
+        </tr>
+
+        <tr>
+            <td>CEO</td>
+            <td>Are we growing?</td>
+        </tr>
+
+        <tr>
+            <td>CFO</td>
+            <td>Are we profitable?</td>
+        </tr>
+
+        <tr>
+            <td>Sales Head</td>
+            <td>Which regions drive sales?</td>
+        </tr>
+
+        <tr>
+            <td>Marketing Head</td>
+            <td>Which customers should we target?</td>
+        </tr>
+
+        <tr>
+            <td>Operations Head</td>
+            <td>Where are operational problems occurring?</td>
+        </tr>
+
+        <tr>
+            <td>Product Manager</td>
+            <td>Which products perform poorly?</td>
+        </tr>
+    </table>
+
+    <div class="highlight">
+        <strong>Key lesson:</strong>
+        The data may be the same, but the business questions are different.
+    </div>
+</section>
+
+
+<!-- QUESTION FRAMEWORK -->
+
+<section>
+    <span class="time">1:50 – 2:00 | 10 Minutes</span>
+
+    <h2>11. From Business Problem to Analytical Question</h2>
+
+    <div class="big-question">
+        Business Problem: "We want to increase profit."
+    </div>
+
+    <p>Break the problem into smaller questions:</p>
+
+    <ol>
+        <li>What is our current profit?</li>
+        <li>Which regions generate the most profit?</li>
+        <li>Which categories generate the most profit?</li>
+        <li>Which products have negative profit?</li>
+        <li>Are discounts affecting profitability?</li>
+        <li>Which customers generate high revenue but low profit?</li>
+    </ol>
+
+    <div class="highlight">
+        <strong>Analyst mindset:</strong>
+        Never immediately jump from a vague problem to a dashboard.
+        First convert the problem into measurable questions.
+    </div>
+</section>
+
+
+<!-- FINAL EXERCISE -->
+
+<section>
+    <h2>🧠 Superstore Business Questions</h2>
+
+    <div class="exercise">
+
+        <h3>Question 1</h3>
+
+        <p>
+            Which region generates the highest sales?
+        </p>
+
+        <div class="answer">
+            <strong>Dimension:</strong> Region<br>
+            <strong>Metric:</strong> Sales
+        </div>
+
+
+        <h3>Question 2</h3>
+
+        <p>
+            Which category generates the highest profit?
+        </p>
+
+        <div class="answer">
+            <strong>Dimension:</strong> Category<br>
+            <strong>Metric:</strong> Profit
+        </div>
+
+
+        <h3>Question 3</h3>
+
+        <p>
+            Which products are losing money?
+        </p>
+
+        <div class="answer">
+            <strong>Dimension:</strong> Product<br>
+            <strong>Metric:</strong> Profit<br>
+            <strong>Filter:</strong> Profit &lt; 0
+        </div>
+
+
+        <h3>Question 4</h3>
+
+        <p>
+            Does discount affect profitability?
+        </p>
+
+        <div class="answer">
+            Compare <strong>Discount</strong> against
+            <strong>Profit Margin</strong>.
+        </div>
+
+
+        <h3>Question 5</h3>
+
+        <p>
+            Which customers generate the most revenue?
+        </p>
+
+        <div class="answer">
+            <strong>Dimension:</strong> Customer<br>
+            <strong>Metric:</strong> Sales
+        </div>
+
+<h3>Question 6</h3>
+
+<p>
+
+Which regions have high sales but low profit?
+
+</p>
+
+<div class="answer">
+
+<strong>Dimension:</strong> Region<br>
+
+<strong>Metrics:</strong> Sales + Profit
+
+</div>
+
+</div>
+
+</section>
+
+<div class="highlight">
+
+<h3>The Most Important Lesson</h3>
+
+<p>
+
+Don't learn Data Analytics as:
+
+</p>
+
+<p class="important">
+
+Excel → SQL → Power BI → Python
+
+</p>
+
+<p>
+
+Learn it as:
+
+</p>
+
+<p class="important">
+
+Business Problem → Question → Data Analysis → Insight → Decision
+
+</p>
+
+<p>
+
+The tools are simply how you execute each step.
+
+</p>
+
+</div>
+
+<!-- RECAP -->
+
+<section>
+
+<h2> Session Recap</h2>
+
+<ul>
+
+<li>Data Analytics helps businesses make better decisions.</li>
+
+<li>Analytics can be descriptive, diagnostic, predictive or prescriptive.</li>
+
+<li>The analytics lifecycle starts with a business problem.</li>
+
+<li>KPIs measure important business objectives.</li>
+
+<li>Metrics are measurable values.</li>
+
+<li>Dimensions allow us to slice and analyze metrics.</li>
+
+<li>Different stakeholders ask different questions.</li>
+
+<li>A good analyst converts vague problems into measurable questions.</li>
+
+<li>Tools such as SQL, Python and Power BI support the analytical process.</li>
+
+</ul>
+
+<div class="highlight">
+
+<strong>Final Question:</strong>
+
+<br><br>
+
+If your manager says,
+
+<br><br>
+
+<strong>"Our sales are falling. Find out why."</strong>
+
+<br><br>
+
+What are the first 5 questions you would ask?
+
+</div>
+
+</section>
+
+</div>
+
+<footer>
+
+Introduction to Data Analytics Student Learning Material
+
+</footer>
+
+</body>
+
+</html>
+
