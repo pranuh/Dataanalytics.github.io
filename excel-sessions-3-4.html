@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel for Data Handling — Sessions 3 & 4</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --paper:#FAFAF7;
+    --ink:#1E2521;
+    --ink-soft:#535E56;
+    --forest:#2D5F4C;
+    --forest-deep:#1E4436;
+    --amber:#C6862F;
+    --grid:#DCE1D8;
+    --grid-strong:#B9C2B4;
+    --white:#FFFFFF;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    color:var(--forest-deep);
+    margin:0;
+  }
+  code, .formula, .kbd{
+    font-family:'IBM Plex Mono',monospace;
+  }
+  a{color:var(--forest);}
+
+  /* ---- Formula bar header ---- */
+  .formula-bar{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border-bottom:1px solid var(--grid-strong);
+    background:var(--white);
+    padding:10px 24px;
+    position:sticky;
+    top:0;
+    z-index:20;
+  }
+  .name-box{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--forest-deep);
+    background:var(--paper);
+    border:1px solid var(--grid-strong);
+    border-radius:3px;
+    padding:4px 10px;
+    min-width:64px;
+    text-align:center;
+  }
+  .fx{
+    font-family:'IBM Plex Mono',monospace;
+    font-style:italic;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+  .formula-bar .content-line{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+    border-bottom:1px solid transparent;
+    flex:1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* ---- Hero ---- */
+  .hero{
+    padding:56px 24px 40px;
+    max-width:920px;
+    margin:0 auto;
+  }
+  .hero .col-row-frame{
+    display:grid;
+    grid-template-columns:32px 1fr;
+    border:1px solid var(--grid-strong);
+  }
+  .hero .colhead{
+    grid-column:2;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    background:var(--forest);
+  }
+  .hero .colhead span{
+    color:#EDEFE9;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    text-align:center;
+    padding:5px 0;
+    border-right:1px solid rgba(255,255,255,0.15);
+  }
+  .hero .rownum{
+    background:var(--forest);
+    color:#EDEFE9;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .hero .body-cell{
+    padding:28px 30px 34px;
+    border-top:1px solid var(--grid-strong);
+  }
+  .hero h1{
+    font-size:clamp(28px,4vw,40px);
+    line-height:1.15;
+    margin-bottom:12px;
+  }
+  .hero p{
+    color:var(--ink-soft);
+    font-size:16px;
+    max-width:58ch;
+    margin:0 0 18px;
+  }
+  .hero .tags{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .hero .tags span{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--forest-deep);
+    border:1px solid var(--grid-strong);
+    border-radius:3px;
+    padding:3px 9px;
+    background:var(--paper);
+  }
+
+  /* ---- Sheet tabs ---- */
+  .tabs{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 24px;
+    display:flex;
+    gap:2px;
+  }
+  .tab{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    padding:10px 22px;
+    background:var(--grid);
+    color:var(--ink-soft);
+    border:1px solid var(--grid-strong);
+    border-bottom:none;
+    border-radius:6px 6px 0 0;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .tab.active{
+    background:var(--white);
+    color:var(--forest-deep);
+    border-bottom:1px solid var(--white);
+    margin-bottom:-1px;
+  }
+  .tab:hover:not(.active){background:#E5E9E2;}
+
+  .sheet{
+    max-width:920px;
+    margin:0 auto;
+    background:var(--white);
+    border:1px solid var(--grid-strong);
+    border-radius:0 6px 6px 6px;
+    padding:8px 0 40px;
+  }
+  .sheet-panel{display:none;}
+  .sheet-panel.active{display:block;}
+
+  /* ---- Cell block (topic) ---- */
+  .cellblock{
+    display:grid;
+    grid-template-columns:56px 1fr;
+    border-top:1px solid var(--grid);
+  }
+  .cellblock:first-child{border-top:none;}
+  .addr{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--amber);
+    padding:26px 0 0;
+    text-align:center;
+    border-right:1px solid var(--grid);
+    background:#FCFBF8;
+  }
+  .cellblock .body{
+    padding:24px 30px 30px;
+  }
+  .cellblock h2{
+    font-size:21px;
+    margin-bottom:10px;
+  }
+  .cellblock p{margin:0 0 12px; color:var(--ink);}
+  .cellblock ul, .cellblock ol{
+    margin:0 0 14px;
+    padding-left:20px;
+  }
+  .cellblock li{margin-bottom:6px;}
+
+  .callout{
+    background:#F2F6F0;
+    border-left:3px solid var(--forest);
+    padding:12px 16px;
+    border-radius:0 4px 4px 0;
+    margin:14px 0;
+    font-size:14.5px;
+  }
+  .callout strong{color:var(--forest-deep);}
+
+  table.ref{
+    width:100%;
+    border-collapse:collapse;
+    margin:14px 0 18px;
+    font-size:14px;
+  }
+  table.ref th{
+    text-align:left;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12px;
+    color:var(--forest-deep);
+    background:var(--paper);
+    border:1px solid var(--grid-strong);
+    padding:8px 10px;
+  }
+  table.ref td{
+    border:1px solid var(--grid);
+    padding:8px 10px;
+    vertical-align:top;
+  }
+  table.ref td .formula, table.ref td code{
+    color:var(--forest-deep);
+    background:#F2F6F0;
+    padding:1px 5px;
+    border-radius:3px;
+  }
+
+  .kbd{
+    display:inline-block;
+    background:#F2F1EC;
+    border:1px solid var(--grid-strong);
+    border-bottom-width:2px;
+    border-radius:4px;
+    padding:1px 7px;
+    font-size:12.5px;
+    color:var(--ink);
+  }
+
+  .formula-block{
+    background:var(--forest-deep);
+    color:#EAF0EA;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:14px;
+    padding:12px 16px;
+    border-radius:5px;
+    margin:12px 0;
+    overflow-x:auto;
+  }
+  .formula-block .amber{color:#E3B168;}
+
+  .practice{
+    background:#FCF7EE;
+    border:1px solid #E9D3A8;
+    border-radius:6px;
+    padding:20px 22px;
+    margin-top:6px;
+  }
+  .practice h3{
+    font-size:15px;
+    color:var(--amber);
+    margin-bottom:10px;
+  }
+  .practice ol{margin:0; padding-left:20px;}
+  .practice li{margin-bottom:8px; font-size:14.5px;}
+
+  footer{
+    max-width:920px;
+    margin:30px auto 60px;
+    padding:0 24px;
+    color:var(--ink-soft);
+    font-size:13px;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  @media (max-width:640px){
+    .cellblock{grid-template-columns:36px 1fr;}
+    .addr{font-size:10px;padding-top:20px;}
+    .cellblock .body{padding:18px 16px 24px;}
+    .hero .body-cell{padding:20px 18px 26px;}
+    .tabs{padding:0 12px;}
+    .sheet{border-radius:0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="formula-bar">
+  <div class="name-box">A1</div>
+  <div class="fx">fx</div>
+  <div class="content-line">Excel for Data Handling — Session 3: Basics · Session 4: Essential Functions</div>
+</div>
+
+<div class="hero">
+  <div class="col-row-frame">
+    <div></div>
+    <div class="colhead"><span>A · Foundations</span><span>B · Functions</span></div>
+    <div class="rownum">1</div>
+    <div class="body-cell">
+      <h1>Excel for Data Handling</h1>
+      <p>Two linked sessions that take you from a blank workbook to analyzing real sales and employee data. Everything below builds on the fictional dataset you'll use in both practice activities, so keep your worksheet from Session 3 open when you reach Session 4.</p>
+      <div class="tags">
+        <span>Workbook & worksheet</span>
+        <span>Formulas</span>
+        <span>SUM · IF · SUMIF</span>
+        <span>Hands-on practice</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-target="session3">Session 3 · Basics</div>
+  <div class="tab" data-target="session4">Session 4 · Functions</div>
+</div>
+
+<div class="sheet">
+
+  <!-- SESSION 3 -->
+  <div class="sheet-panel active" id="session3">
+
+    <div class="cellblock">
+      <div class="addr">A1</div>
+      <div class="body">
+        <h2>Workbook vs. worksheet</h2>
+        <p>A <strong>workbook</strong> is the entire Excel file (the <code>.xlsx</code>) you save on disk. A <strong>worksheet</strong> (or "sheet") is one page inside that file, made of a grid of rows and columns. A single workbook can hold many worksheets — for example, one tab for raw sales data, one for a summary, and one for charts.</p>
+        <ul>
+          <li>Columns are labeled with letters (A, B, C … Z, then AA, AB …).</li>
+          <li>Rows are labeled with numbers (1, 2, 3 …).</li>
+          <li>Each box where a row and column meet is a <strong>cell</strong>, identified by its address — e.g. <code>C4</code> means column C, row 4.</li>
+          <li>Sheet tabs sit at the bottom of the window; double-click a tab to rename it, right-click to add, delete, or color-code sheets.</li>
+        </ul>
+        <div class="callout"><strong>Why it matters:</strong> when you analyze data later, you'll often keep raw data on one sheet and build summaries on another — so formulas need to reference cells across sheets, written as <code>SheetName!A1</code>.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">A2</div>
+      <div class="body">
+        <h2>Formatting a worksheet</h2>
+        <p>Formatting changes how data looks without changing the underlying value. Good formatting makes a sheet readable at a glance — this matters as much as the formulas themselves.</p>
+        <table class="ref">
+          <tr><th>Task</th><th>Where to find it</th></tr>
+          <tr><td>Bold, italic, font size, color</td><td>Home tab → Font group</td></tr>
+          <tr><td>Number, currency, percentage, date formats</td><td>Home tab → Number group, or <span class="kbd">Ctrl</span>+<span class="kbd">1</span></td></tr>
+          <tr><td>Cell fill color / borders</td><td>Home tab → Font group (paint bucket icon, border icon)</td></tr>
+          <tr><td>Column width / row height</td><td>Drag the border between headers, or double-click to auto-fit</td></tr>
+          <tr><td>Merge & center a title across columns</td><td>Home tab → Alignment group</td></tr>
+          <tr><td>Freeze header row so it stays visible while scrolling</td><td>View tab → Freeze Panes → Freeze Top Row</td></tr>
+        </table>
+        <div class="callout"><strong>Habit to build:</strong> format your header row (bold text, a fill color, freeze it) before you enter any data. It costs ten seconds now and saves confusion later.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">A3</div>
+      <div class="body">
+        <h2>Cell references</h2>
+        <p>A cell reference is how a formula points to a value instead of retyping it. Excel has three types, and the difference only shows up when you <em>copy</em> a formula to other cells.</p>
+        <table class="ref">
+          <tr><th>Type</th><th>Written as</th><th>Behavior when copied</th></tr>
+          <tr><td>Relative</td><td><code>A2</code></td><td>Shifts automatically — copying <code>=A2*2</code> from row 2 to row 3 becomes <code>=A3*2</code>.</td></tr>
+          <tr><td>Absolute</td><td><code>$A$2</code></td><td>Stays locked to A2 no matter where you copy it. Use for a fixed value like a tax rate.</td></tr>
+          <tr><td>Mixed</td><td><code>$A2</code> or <code>A$2</code></td><td>Locks only the column or only the row — useful in tables where one axis should stay fixed.</td></tr>
+        </table>
+        <p>Press <span class="kbd">F4</span> right after typing a reference to cycle through relative → absolute → mixed → mixed, instead of typing dollar signs by hand.</p>
+        <div class="formula-block">=B2*<span class="amber">$D$1</span>&nbsp;&nbsp;<span style="color:#9AB0A0">// B2 shifts when copied; $D$1 (e.g. a fixed commission rate) never does</span></div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">A4</div>
+      <div class="body">
+        <h2>Writing formulas</h2>
+        <p>Every formula starts with an equals sign. Excel calculates it and shows the result in the cell, while the formula itself stays visible in the formula bar when that cell is selected.</p>
+        <ul>
+          <li>Basic arithmetic: <code>=A2+B2</code>, <code>=A2-B2</code>, <code>=A2*B2</code>, <code>=A2/B2</code></li>
+          <li>Order of operations follows normal math rules — use parentheses to control it: <code>=(A2+B2)*C2</code></li>
+          <li>Reference another sheet: <code>=Sales!B2</code></li>
+          <li>Click a cell instead of typing its address — Excel inserts the reference for you and it's less error-prone</li>
+        </ul>
+        <div class="callout"><strong>Common mistake:</strong> typing a formula's result by hand instead of a formula. If you type <code>450</code> instead of <code>=B2+C2</code>, the number won't update when B2 or C2 changes.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">A5</div>
+      <div class="body">
+        <h2>Keyboard shortcuts worth memorizing</h2>
+        <table class="ref">
+          <tr><th>Shortcut</th><th>Action</th></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">C</span> / <span class="kbd">Ctrl</span>+<span class="kbd">V</span></td><td>Copy / paste</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">Z</span></td><td>Undo</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">Arrow key</span></td><td>Jump to the edge of a data block</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">Arrow key</span></td><td>Select to the edge of a data block</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">Space</span> / <span class="kbd">Shift</span>+<span class="kbd">Space</span></td><td>Select entire column / entire row</td></tr>
+          <tr><td><span class="kbd">Alt</span>+<span class="kbd">=</span></td><td>Auto-insert a SUM formula</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">1</span></td><td>Open Format Cells dialog</td></tr>
+          <tr><td><span class="kbd">F2</span></td><td>Edit the active cell</td></tr>
+          <tr><td><span class="kbd">F4</span></td><td>Toggle relative/absolute reference; also repeats the last action</td></tr>
+          <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">`</span></td><td>Show formulas instead of results (toggle)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">A6</div>
+      <div class="body">
+        <h2>Practice activity: build a sales sheet</h2>
+        <div class="practice">
+          <h3>Do this before Session 4</h3>
+          <ol>
+            <li>Create a new workbook and rename the first sheet tab <strong>Sales</strong>.</li>
+            <li>In row 1, add headers: <code>Product</code>, <code>Region</code>, <code>Units Sold</code>, <code>Unit Price</code>, <code>Revenue</code>. Bold the row and add a fill color, then freeze it.</li>
+            <li>Enter at least 12 rows of sample data across 3–4 products and 2–3 regions (make up realistic numbers).</li>
+            <li>In the Revenue column, write a formula that multiplies Units Sold by Unit Price for each row, using cell references — not typed-in numbers.</li>
+            <li>Format the Unit Price and Revenue columns as currency, and auto-fit all column widths.</li>
+            <li>Add a totals row at the bottom using <span class="kbd">Alt</span>+<span class="kbd">=</span> to sum Units Sold and Revenue.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SESSION 4 -->
+  <div class="sheet-panel" id="session4">
+
+    <div class="cellblock">
+      <div class="addr">B1</div>
+      <div class="body">
+        <h2>SUM, AVERAGE, COUNT</h2>
+        <p>These three answer the most common questions about a range of numbers: total, typical value, and how many entries there are.</p>
+        <table class="ref">
+          <tr><th>Function</th><th>Syntax</th><th>What it returns</th></tr>
+          <tr><td>SUM</td><td><code>=SUM(range)</code></td><td>The total of all numbers in the range</td></tr>
+          <tr><td>AVERAGE</td><td><code>=AVERAGE(range)</code></td><td>The mean of the numbers in the range</td></tr>
+          <tr><td>COUNT</td><td><code>=COUNT(range)</code></td><td>How many cells in the range contain numbers</td></tr>
+          <tr><td>COUNTA</td><td><code>=COUNTA(range)</code></td><td>How many cells contain anything at all (numbers or text) — useful for counting entries like employee names</td></tr>
+        </table>
+        <div class="formula-block">=SUM(E2:E13)&nbsp;&nbsp;<span style="color:#9AB0A0">// total revenue</span><br>=AVERAGE(D2:D13)&nbsp;&nbsp;<span style="color:#9AB0A0">// average unit price</span><br>=COUNTA(A2:A13)&nbsp;&nbsp;<span style="color:#9AB0A0">// number of sales entries</span></div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">B2</div>
+      <div class="body">
+        <h2>MIN, MAX</h2>
+        <p>MIN and MAX pull out the smallest and largest values in a range — useful for spotting your best and worst performers without scrolling through every row.</p>
+        <div class="formula-block">=MAX(E2:E13)&nbsp;&nbsp;<span style="color:#9AB0A0">// highest single revenue value</span><br>=MIN(E2:E13)&nbsp;&nbsp;<span style="color:#9AB0A0">// lowest single revenue value</span></div>
+        <p>To find <em>which</em> product produced that maximum, combine it with <code>INDEX</code>/<code>MATCH</code> later on — for now, it's enough to locate the value and check the row manually.</p>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">B3</div>
+      <div class="body">
+        <h2>IF</h2>
+        <p>IF tests a condition and returns one value if it's true, another if it's false. It's the building block for almost every decision rule you'll build in a spreadsheet.</p>
+        <div class="formula-block">=IF(logical_test, value_if_true, value_if_false)</div>
+        <div class="formula-block">=IF(C2&gt;100,"High Volume","Normal")&nbsp;&nbsp;<span style="color:#9AB0A0">// flag rows where Units Sold exceeds 100</span></div>
+        <p>IFs can be nested to handle more than two outcomes:</p>
+        <div class="formula-block">=IF(E2&gt;10000,"Top Tier",IF(E2&gt;5000,"Mid Tier","Standard"))</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">B4</div>
+      <div class="body">
+        <h2>AND, OR</h2>
+        <p>AND and OR combine multiple conditions. They return TRUE or FALSE on their own, which is why they're almost always nested inside an IF.</p>
+        <table class="ref">
+          <tr><th>Function</th><th>Returns TRUE when</th></tr>
+          <tr><td>AND</td><td>every condition given is true</td></tr>
+          <tr><td>OR</td><td>at least one condition given is true</td></tr>
+        </table>
+        <div class="formula-block">=IF(AND(C2&gt;50,D2&gt;200),"Bonus Eligible","Not Eligible")&nbsp;&nbsp;<span style="color:#9AB0A0">// both conditions must hold</span><br>=IF(OR(B2="North",B2="East"),"Zone 1","Zone 2")&nbsp;&nbsp;<span style="color:#9AB0A0">// either condition is enough</span></div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">B5</div>
+      <div class="body">
+        <h2>SUMIF, COUNTIF</h2>
+        <p>These add a condition directly into SUM and COUNT, so you don't need an IF column to filter first.</p>
+        <div class="formula-block">=SUMIF(range, criteria, [sum_range])<br>=COUNTIF(range, criteria)</div>
+        <div class="formula-block">=SUMIF(B2:B13,"North",E2:E13)&nbsp;&nbsp;<span style="color:#9AB0A0">// total revenue for the North region only</span><br>=COUNTIF(A2:A13,"Notebook")&nbsp;&nbsp;<span style="color:#9AB0A0">// how many rows sold Notebooks</span></div>
+        <p>If a condition depends on more than one column (e.g. Region <em>and</em> Product), use <code>SUMIFS</code> and <code>COUNTIFS</code>, which take multiple range/criteria pairs — worth a quick look once these two feel comfortable.</p>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">B6</div>
+      <div class="body">
+        <h2>Practice activity: analyze sales and employee data</h2>
+        <div class="practice">
+          <h3>Using your Session 3 sales sheet, plus a new Employees sheet</h3>
+          <ol>
+            <li>On the Sales sheet, add a summary block: total revenue (SUM), average unit price (AVERAGE), and number of transactions (COUNTA).</li>
+            <li>Use MAX and MIN to identify the highest and lowest single-row revenue values.</li>
+            <li>Add a column <code>Volume Flag</code> using IF to mark rows as "High Volume" when Units Sold &gt; 100, else "Normal".</li>
+            <li>Use SUMIF to calculate total revenue per region, and COUNTIF to count transactions per product, in a small table below your data.</li>
+            <li>Add a new sheet tab named <strong>Employees</strong> with columns: <code>Name</code>, <code>Department</code>, <code>Years of Service</code>, <code>Sales Target Met</code> (TRUE/FALSE), for 10 employees.</li>
+            <li>Write a formula using AND that returns "Eligible" only for employees with more than 2 years of service <em>and</em> Sales Target Met = TRUE.</li>
+            <li>Use COUNTIF to count how many employees are in each department.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <span>Excel for Data Handling — Session 3 & Session 4</span>
+  <span>Prerequisite: none · Tools: Microsoft Excel or equivalent spreadsheet software</span>
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.sheet-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.target).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
