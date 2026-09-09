@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel Functions Cheat Sheet — Data Analytics</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --paper:#FAFAF7;
+    --ink:#1E2521;
+    --ink-soft:#535E56;
+    --forest:#2D5F4C;
+    --forest-deep:#1E4436;
+    --amber:#C6862F;
+    --grid:#DCE1D8;
+    --grid-strong:#B9C2B4;
+    --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:600;color:var(--forest-deep);margin:0;}
+  code{font-family:'IBM Plex Mono',monospace;}
+
+  .formula-bar{
+    display:flex;align-items:center;gap:14px;
+    border-bottom:1px solid var(--grid-strong);
+    background:var(--white);padding:10px 24px;
+    position:sticky;top:0;z-index:30;
+  }
+  .name-box{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--forest-deep);
+    background:var(--paper);border:1px solid var(--grid-strong);border-radius:3px;
+    padding:4px 10px;min-width:64px;text-align:center;
+  }
+  .fx{font-family:'IBM Plex Mono',monospace;font-style:italic;color:var(--ink-soft);font-size:14px;}
+  .content-line{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-soft);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  .hero{max-width:1080px;margin:0 auto;padding:40px 24px 20px;}
+  .hero h1{font-size:clamp(26px,3.6vw,36px);line-height:1.15;margin-bottom:10px;}
+  .hero p{color:var(--ink-soft);font-size:15.5px;max-width:70ch;margin:0 0 16px;}
+  .hero .tags{display:flex;gap:8px;flex-wrap:wrap;}
+  .hero .tags span{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--forest-deep);
+    border:1px solid var(--grid-strong);border-radius:3px;padding:3px 9px;background:var(--white);
+  }
+
+  .jump{
+    max-width:1080px;margin:18px auto 0;padding:0 24px;
+    display:flex;gap:8px;flex-wrap:wrap;
+  }
+  .jump a{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;text-decoration:none;
+    color:var(--forest-deep);background:var(--white);border:1px solid var(--grid-strong);
+    border-radius:4px;padding:5px 10px;
+  }
+  .jump a:hover{background:var(--forest);color:#fff;border-color:var(--forest);}
+
+  main{max-width:1080px;margin:0 auto;padding:20px 24px 60px;}
+
+  .category{
+    background:var(--white);
+    border:1px solid var(--grid-strong);
+    border-radius:8px;
+    margin-bottom:22px;
+    overflow:hidden;
+    scroll-margin-top:64px;
+  }
+  .category .cat-head{
+    display:flex;align-items:baseline;gap:12px;
+    background:var(--forest);
+    color:#EDEFE9;
+    padding:12px 20px;
+  }
+  .category .cat-head .num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;color:#B7CFC2;
+  }
+  .category .cat-head h2{color:#fff;font-size:17px;}
+  .category .cat-sub{
+    color:#CFE0D5;font-size:12.5px;font-family:'Inter',sans-serif;margin-left:auto;
+  }
+
+  .table-scroll{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  table.fn{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+    min-width:640px;
+  }
+  table.fn th{
+    text-align:left;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:11px;
+    letter-spacing:.02em;
+    color:var(--ink-soft);
+    background:#F3F5F1;
+    padding:8px 14px;
+    border-bottom:1px solid var(--grid-strong);
+    position:sticky;
+  }
+  table.fn td{
+    padding:10px 14px;
+    border-bottom:1px solid var(--grid);
+    vertical-align:top;
+  }
+  table.fn tr:last-child td{border-bottom:none;}
+  table.fn tr:hover td{background:#FAFCF9;}
+  table.fn td.fname{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    color:var(--forest-deep);
+    white-space:nowrap;
+  }
+  table.fn td.syntax code{
+    background:#F2F6F0;
+    color:var(--forest-deep);
+    padding:2px 6px;
+    border-radius:3px;
+    font-size:12.5px;
+    white-space:nowrap;
+  }
+  table.fn td.example code{
+    background:var(--forest-deep);
+    color:#E3B168;
+    padding:2px 6px;
+    border-radius:3px;
+    font-size:12.5px;
+    display:inline-block;
+  }
+  table.fn td.use{color:var(--ink-soft);font-size:13px;max-width:260px;}
+
+  .note{
+    background:#FCF7EE;
+    border-top:1px solid #E9D3A8;
+    padding:12px 20px;
+    font-size:13px;
+    color:#7A5A25;
+  }
+  .note strong{color:var(--amber);}
+
+  footer{
+    max-width:1080px;margin:10px auto 60px;padding:0 24px;
+    color:var(--ink-soft);font-size:13px;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  }
+
+  @media (max-width:700px){
+    table.fn{font-size:12.5px;}
+    table.fn td, table.fn th{padding:8px 10px;}
+    table.fn td.use{max-width:none;}
+    .cat-sub{display:none;}
+  }
+
+  @media print{
+    .formula-bar, .jump{display:none;}
+    .category{break-inside:avoid;border:1px solid #999;}
+    body{background:#fff;}
+  }
+</style>
+</head>
+<body>
+
+<div class="formula-bar">
+  <div class="name-box">fx</div>
+  <div class="fx">cheat sheet</div>
+  <div class="content-line">Excel Functions for Data Analytics — full reference</div>
+</div>
+
+<div class="hero">
+  <h1>Excel Functions Cheat Sheet for Analytics</h1>
+  <p>Every function grouped by what job it does — aggregation, conditional logic, lookups, text cleanup, dates, and dynamic arrays. Each row gives the exact syntax, a working example, and when to reach for it. Built to sit open on a second monitor while you work.</p>
+  <div class="tags">
+    <span>9 categories</span>
+    <span>60+ functions</span>
+    <span>Printable — use your browser's Print</span>
+  </div>
+</div>
+
+<div class="jump">
+  <a href="#c1">1. Aggregation</a>
+  <a href="#c2">2. Conditional aggregation</a>
+  <a href="#c3">3. Logical</a>
+  <a href="#c4">4. Lookup & reference</a>
+  <a href="#c5">5. Text cleanup</a>
+  <a href="#c6">6. Date & time</a>
+  <a href="#c7">7. Rounding & math</a>
+  <a href="#c8">8. Ranking & distribution</a>
+  <a href="#c9">9. Dynamic arrays</a>
+</div>
+
+<main>
+
+  <div class="category" id="c1">
+    <div class="cat-head"><span class="num">01</span><h2>Aggregation — the basic summary numbers</h2><span class="cat-sub">Start here for any dataset</span></div>
+    <div class="table-scroll">
+    <table class="fn">
+      <tr><th>Function</th><th>Syntax</th><th>Example</th><th>Use it for</th></tr>
+      <tr><td class="fname">SUM</td><td class="syntax"><code>=SUM(range)</code></td><td class="example"><code>=SUM(E2:E100)</code></td><td class="use">Total of a numeric column</td></tr>
+      <tr><td class="fname">AVERAGE</td><td class="syntax"><code>=AVERAGE(range)</code></td><td class="example"><code>=AVERAGE(D2:D100)</code></td><td class="use">Mean value — sensitive to outliers</td></tr>
+      <tr><td class="fname">MEDIAN</td><td class="syntax"><code>=MEDIAN(range)</code></td><td class="example"><code>=MEDIAN(D2:D100)</code></td><td class="use">Middle value — better than AVERAGE when outliers exist</td></tr>
+      <tr><td class="fname">COUNT</td><td class="syntax"><code>=COUNT(range)</code></td><td class="example"><code>=COUNT(C2:C100)</code></td><td class="use">How many cells hold numbers</td></tr>
+      <tr><td class="fname">COUNTA</td><td class="syntax"><code>=COUNTA(range)</code></td><td class="example"><code>=COUNTA(A2:A100)</code></td><td class="use">How many cells are non-blank (numbers or text)</td></tr>
+      <tr><td class="fname">COUNTBLANK</td><td class="syntax"><code>=COUNTBLANK(range)</code></td><td class="example"><code>=COUNTBLANK(B2:B100)</code></td><td class="use">Find missing data before analysis</td></tr>
+      <tr><td class="fname">MIN / MAX</td><td class="syntax"><code>=MIN(range)</code> / <code>=MAX(range)</code></td><td class="example"><code>=MAX(E2:E100)</code></td><td class="use">Smallest / largest value — spot extremes</td></tr>
+      <tr><td class="fname">SUBTOTAL</td><td class="syntax"><code>=SUBTOTAL(function_num, range)</code></td><td class="example"><code>=SUBTOTAL(9,E2:E100)</code></td><td class="use">Like SUM but ignores rows hidden by a Filter — use inside filtered tables</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="category" id="c2">
+    <div class="cat-head"><span class="num">02</span><h2>Conditional aggregation — summary numbers with a filter built in</h2><span class="cat-sub">The real analyst's toolkit</span></div>
+    <div class="table-scroll">
+    <table class="fn">
+      <tr><th>Function</th><th>Syntax</th><th>Example</th><th>Use it for</th></tr>
+      <tr><td class="fname">SUMIF</td><td class="syntax"><code>=SUMIF(range, criteria, sum_range)</code></td><td class="example"><code>=SUMIF(B2:B100,"North",E2:E100)</code></td><td class="use">Total matching one condition</td></tr>
+      <tr><td class="fname">SUMIFS</td><td class="syntax"><code>=SUMIFS(sum_range, range1, crit1, range2, crit2…)</code></td><td class="example"><code>=SUMIFS(E2:E100,B2:B100,"North",A2:A100,"Notebook")</code></td><td class="use">Total matching two or more conditions at once</td></tr>
+      <tr><td class="fname">COUNTIF</td><td class="syntax"><code>=COUNTIF(range, criteria)</code></td><td class="example"><code>=COUNTIF(A2:A100,"Notebook")</code></td><td class="use">Count matching one condition</td></tr>
+      <tr><td class="fname">COUNTIFS</td><td class="syntax"><code>=COUNTIFS(range1, crit1, range2, crit2…)</code></td><td class="example"><code>=COUNTIFS(B2:B100,"North",C2:C100,"&gt;100")</code></td><td class="use">Count matching multiple conditions</td></tr>
+      <tr><td class="fname">AVERAGEIF</td><td class="syntax"><code>=AVERAGEIF(range, criteria, avg_range)</code></td><td class="example"><code>=AVERAGEIF(B2:B100,"South",D2:D100)</code></td><td class="use">Average of a subset that meets one condition</td></tr>
+      <tr><td class="fname">AVERAGEIFS</td><td class="syntax"><code>=AVERAGEIFS(avg_range, range1, crit1, range2, crit2…)</code></td><td class="example"><code>=AVERAGEIFS(D2:D100,B2:B100,"South",A2:A100,"Pen Set")</code></td><td class="use">Average of a subset that meets multiple conditions</td></tr>
+      <tr><td class="fname">MAXIFS / MINIFS</td><td class="syntax"><code>=MAXIFS(max_range, range1, crit1…)</code></td><td class="example"><code>=MAXIFS(E2:E100,B2:B100,"East")</code></td><td class="use">Highest/lowest value within a filtered subset</td></tr>
+    </table>
+    </div>
+    <div class="note"><strong>Rule of thumb:</strong> if the condition is on the same column you're summing, SUMIF is enough. The moment you need "Region = North <em>and</em> Product = Notebook," jump straight to SUMIFS/COUNTIFS/AVERAGEIFS.</div>
+  </div>
+
+  <div class="category" id="c3">
+    <div class="cat-head"><span class="num">03</span><h2>Logical — decisions and error handling</h2><span class="cat-sub">Flags, tiers, and clean error messages</span></div>
+    <div class="table-scroll">
+    <table class="fn">
+      <tr><th>Function</th><th>Syntax</th><th>Example</th><th>Use it for</th></tr>
+      <tr><td class="fname">IF</td><td class="syntax"><code>=IF(test, if_true, if_false)</code></td><td class="example"><code>=IF(C2&gt;100,"High","Normal")</code></td><td class="use">Two-way decision</td></tr>
+      <tr><td class="fname">IFS</td><td class="syntax"><code>=IFS(test1, val1, test2, val2…)</code></td><td class="example"><code>=IFS(E2&gt;10000,"Top",E2&gt;5000,"Mid",TRUE,"Low")</code></td><td class="use">Many-way decision without nesting several IFs</td></tr>
+      <tr><td class="fname">AND</td><td class="syntax"><code>=AND(test1, test2…)</code></td><td class="example"><code>=IF(AND(C2&gt;50,D2&gt;75),"Pass","Fail")</code></td><td class="use">TRUE only if every condition holds</td></tr>
+      <tr><td class="fname">OR</td><td class="syntax"><code>=OR(test1, test2…)</code></td><td class="example"><code>=IF(OR(B2="North",B2="East"),"Zone1","Zone2")</code></td><td class="use">TRUE if any condition holds</td></tr>
+      <tr><td class="fname">NOT</td><td class="syntax"><code>=NOT(test)</code></td><td class="example"><code>=IF(NOT(B2="Closed"),"Active","Closed")</code></td><td class="use">Reverses a TRUE/FALSE result</td></tr>
+      <tr><td class="fname">IFERROR</td><td class="syntax"><code>=IFERROR(formula, value_if_error)</code></td><td class="example"><code>=IFERROR(VLOOKUP(A2,Prod!A:D,3,FALSE),"Not Found")</code></td><td class="use">Replace any error with a clean message</td></tr>
+      <tr><td class="fname">IFNA</td><td class="syntax"><code>=IFNA(formula, value_if_na)</code></td><td class="example"><code>=IFNA(XLOOKUP(A2,ID,Name),"No Match")</code></td><td class="use">Same as IFERROR but only catches #N/A, not all errors</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="category" id="c4">
+    <div class="cat-head"><span class="num">04</span><h2>Lookup & reference — combining tables</h2><span class="cat-sub">Pulling matching data across sheets</span></div>
+    <div class="table-scroll">
+    <table class="fn">
+      <tr><th>Function</th><th>Syntax</th><th>Example</th><th>Use it for</th></tr>
+      <tr><td class="fname">VLOOKUP</td><td class="syntax"><code>=VLOOKUP(lookup, table, col_num, FALSE)</code></td><td class="example"><code>=VLOOKUP(A2,Products!A:D,3,FALSE)</code></td><td class="use">Standard lookup — only searches left to right</td></tr>
+      <tr><td class="fname">HLOOKUP</td><td class="syntax"><code>=HLOOKUP(lookup, table, row_num, FALSE)</code></td><td class="example"><code>=HLOOKUP(A2,Rates!A1:F5,3,FALSE)</code></td><td class="use">Same as VLOOKUP but for data laid out in rows instead of columns</td></tr>
+      <tr><td class="fname">XLOOKUP</td><td class="syntax"><code>=XLOOKUP(lookup, lookup_array, return_array, [if_not_found])</code></td><td class="example"><code>=XLOOKUP(A2,Products!A:A,Products!C:C,"N/A")</code></td><td class="use">Modern lookup — any direction, no column counting, clean not-found handling</td></tr>
+      <tr><td class="fname">INDEX</td><td class="syntax"><code>=INDEX(array, row_num, [col_num])</code></td><td class="example"><code>=INDEX(C2:C100,7)</code></td><td class="use">Returns the value at a given position in a range</td></tr>
+      <tr><td class="fname">MATCH</td><td class="syntax"><code>=MATCH(lookup, array, 0)</code></td><td class="example"><code>=MATCH(A2,Products!A:A,0)</code></td><td class="use">Returns the <em>position</em> of a value — combine with INDEX</td></tr>
+      <tr><td class="fname">INDEX+MATCH</td><td class="syntax"><code>=INDEX(return_col,MATCH(lookup,lookup_col,0))</code></td><td class="example"><code>=INDEX(Products!C:C,MATCH(A2,Products!A:A,0))</code></td><td class="use">Works in every Excel version; looks either direction</td></tr>
+      <tr><td class="fname">CHOOSE</td><td class="syntax"><code>=CHOOSE(index_num, val1, val2…)</code></td><td class="example"><code>=CHOOSE(2,"Low","Mid","High")</code></td><td class="use">Pick from a short fixed list by position number</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="category" id="c5">
+    <div class="cat-head"><span class="num">05</span><h2>Text cleanup — before analysis can start</h2><span class="cat-sub">Fixing messy source data</span></div>
+    <div class="table-scroll">
+    <table class="fn">
+      <tr><th>Function</th><th>Syntax</th><th>Example</th><th>Use it for</th></tr>
+      <tr><td class="fname">TRIM</td><td class="syntax"><code>=TRIM(text)</code></td><td class="example"><code>=TRIM(A2)</code></td><td class="use">Removes extra/leading/trailing spaces</td></tr>
+      <tr><td class="fname">CLEAN</td><td class="syntax"><code>=CLEAN(text)</code></td><td class="example"><code>=CLEAN(A2)</code></td><td class="use">Strips non-printing characters from pasted data</td></tr>
+      <tr><td class="fname">PROPER / UPPER / LOWER</td><td class="syntax"><code>=PROPER(text)</code></td><td class="example"><code>=PROPER(A2)</code></td><td class="use">Standardize capitalization before comparing text</td></tr>
+      <tr><td class="fname">LEFT / RIGHT / MID</td><td class="syntax"><code>=LEFT(text,n)</code> / <code>=MID(text,start,n)</code></td><td class="example"><code>=LEFT(A2,3)</code></td><td class="use">Extract a fixed number of characters from a string</td></tr>
+      <tr><td class="fname">LEN</td><td class="syntax"><code>=LEN(text)</code></td><td class="example"><code>=LEN(A2)</code></td><td class="use">Character count — catch truncated or malformed entries</td></tr>
+      <tr><td class="fname">FIND / SEARCH</td><td class="syntax"><code>=FIND(find_text, within_text)</code></td><td class="example"><code>=FIND("@",A2)</code></td><td class="use">Position of a character — SEARCH ignores case, FIND doesn't</td></tr>
+      <tr><td class="fname">SUBSTITUTE</td><td class="syntax"><code>=SUBSTITUTE(text, old, new)</code></td><td class="example"><code>=SUBSTITUTE(A2,"-","")</code></td><td class="use">Replace every occurrence of a character or word</td></tr>
+      <tr><td class="fname">CONCAT / TEXTJOIN</td><td class="syntax"><code>=TEXTJOIN(delim, ignore_empty, range)</code></td><td class="example"><code>=TEXTJOIN(", ",TRUE,A2:C2)</code></td><td class="use">Combine multiple columns into one, with a chosen separator</td></tr>
+      <tr><td class="fname">TEXT</td><td class="syntax"><code>=TEXT(value, format)</code></td><td class="example"><code>=TEXT(E2,"#,##0.00")</code></td><td class="use">Convert a number/date into formatted text for reports</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="category" id="c6">
+    <div class="cat-head"><span class="num">06</span><h2>Date & time — trend and cohort analysis</h2><span class="cat-sub">Turning timestamps into usable periods</span></div>
+    <div class="table-scroll">
+    <table class="fn">
+      <tr><th>Function</th><th>Syntax</th><th>Example</th><th>Use it for</th></tr>
+      <tr><td class="fname">TODAY / NOW</td><td class="syntax"><code>=TODAY()</code> / <code>=NOW()</code></td><td class="example"><code>=TODAY()</code></td><td class="use">Current date / current date+time, updates automatically</td></tr>
+      <tr><td class="fname">YEAR / MONTH / DAY</td><td class="syntax"><code>=YEAR(date)</code></td><td class="example"><code>=YEAR(A2)</code></td><td class="use">Extract a date part for grouping (e.g. sales by month)</td></tr>
+      <tr><td class="fname">DATEDIF</td><td class="syntax"><code>=DATEDIF(start, end, unit)</code></td><td class="example"><code>=DATEDIF(A2,B2,"D")</code></td><td class="use">Days/months/years between two dates — e.g. customer tenure</td></tr>
+      <tr><td class="fname">EOMONTH</td><td class="syntax"><code>=EOMONTH(start_date, months)</code></td><td class="example"><code>=EOMONTH(A2,0)</code></td><td class="use">Last day of the month — useful for month-end reporting cutoffs</td></tr>
+      <tr><td class="fname">WORKDAY</td><td class="syntax"><code>=WORKDAY(start_date, days)</code></td><td class="example"><code>=WORKDAY(A2,10)</code></td><td class="use">Add business days, skipping weekends</td></tr>
+      <tr><td class="fname">NETWORKDAYS</td><td class="syntax"><code>=NETWORKDAYS(start, end)</code></td><td class="example"><code>=NETWORKDAYS(A2,B2)</code></td><td class="use">Count business days between two dates</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="category" id="c7">
+    <div class="cat-head"><span class="num">07</span><h2>Rounding & math — clean numbers for reporting</h2><span class="cat-sub">Precision control</span></div>
+    <div class="table-scroll">
+    <table class="fn">
+      <tr><th>Function</th><th>Syntax</th><th>Example</th><th>Use it for</th></tr>
+      <tr><td class="fname">ROUND</td><td class="syntax"><code>=ROUND(number, digits)</code></td><td class="example"><code>=ROUND(E2,2)</code></td><td class="use">Round to a set number of decimal places</td></tr>
+      <tr><td class="fname">ROUNDUP / ROUNDDOWN</td><td class="syntax"><code>=ROUNDUP(number, digits)</code></td><td class="example"><code>=ROUNDUP(E2,0)</code></td><td class="use">Force rounding direction — e.g. always round up units needed</td></tr>
+      <tr><td class="fname">ABS</td><td class="syntax"><code>=ABS(number)</code></td><td class="example"><code>=ABS(B2-B3)</code></td><td class="use">Absolute difference regardless of which value is larger</td></tr>
+      <tr><td class="fname">SUMPRODUCT</td><td class="syntax"><code>=SUMPRODUCT(range1, range2)</code></td><td class="example"><code>=SUMPRODUCT(C2:C100,D2:D100)</code></td><td class="use">Multiply two ranges element-by-element and sum — weighted totals</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="category" id="c8">
+    <div class="cat-head"><span class="num">08</span><h2>Ranking & distribution — where a value stands</h2><span class="cat-sub">Comparing one row to the whole dataset</span></div>
+    <div class="table-scroll">
+    <table class="fn">
+      <tr><th>Function</th><th>Syntax</th><th>Example</th><th>Use it for</th></tr>
+      <tr><td class="fname">RANK.EQ</td><td class="syntax"><code>=RANK.EQ(number, range, [order])</code></td><td class="example"><code>=RANK.EQ(E2,$E$2:$E$100,0)</code></td><td class="use">Rank a value against the full dataset (0 = descending)</td></tr>
+      <tr><td class="fname">PERCENTILE.INC</td><td class="syntax"><code>=PERCENTILE.INC(range, k)</code></td><td class="example"><code>=PERCENTILE.INC(E2:E100,0.9)</code></td><td class="use">Value at the Nth percentile — e.g. top 10% cutoff</td></tr>
+      <tr><td class="fname">STDEV.S</td><td class="syntax"><code>=STDEV.S(range)</code></td><td class="example"><code>=STDEV.S(E2:E100)</code></td><td class="use">Spread/variability of a sample — flag unusually inconsistent data</td></tr>
+      <tr><td class="fname">MODE.SNGL</td><td class="syntax"><code>=MODE.SNGL(range)</code></td><td class="example"><code>=MODE.SNGL(C2:C100)</code></td><td class="use">Most frequently occurring value</td></tr>
+    </table>
+    </div>
+  </div>
+
+  <div class="category" id="c9">
+    <div class="cat-head"><span class="num">09</span><h2>Dynamic arrays — modern Excel (365 / 2021+)</h2><span class="cat-sub">Spill formulas that replace helper columns</span></div>
+    <div class="table-scroll">
+    <table class="fn">
+      <tr><th>Function</th><th>Syntax</th><th>Example</th><th>Use it for</th></tr>
+      <tr><td class="fname">UNIQUE</td><td class="syntax"><code>=UNIQUE(range)</code></td><td class="example"><code>=UNIQUE(A2:A100)</code></td><td class="use">List distinct values — e.g. unique customer names, no duplicates</td></tr>
+      <tr><td class="fname">SORT</td><td class="syntax"><code>=SORT(range, col, order)</code></td><td class="example"><code>=SORT(A2:E100,5,-1)</code></td><td class="use">Sort a range with a formula instead of the Data tab, updates live</td></tr>
+      <tr><td class="fname">FILTER</td><td class="syntax"><code>=FILTER(range, condition)</code></td><td class="example"><code>=FILTER(A2:E100,B2:B100="North")</code></td><td class="use">Pull matching rows into a new location, updates automatically</td></tr>
+      <tr><td class="fname">SORTBY</td><td class="syntax"><code>=SORTBY(range, by_range, order)</code></td><td class="example"><code>=SORTBY(A2:A100,E2:E100,-1)</code></td><td class="use">Sort one range by the values in a different range</td></tr>
+      <tr><td class="fname">SEQUENCE</td><td class="syntax"><code>=SEQUENCE(rows, [cols], [start], [step])</code></td><td class="example"><code>=SEQUENCE(12,1,1,1)</code></td><td class="use">Auto-generate a numbered list — e.g. month numbers 1–12</td></tr>
+    </table>
+    </div>
+    <div class="note"><strong>Note:</strong> these require Excel 365 or Excel 2021+. On older versions, replicate UNIQUE with Remove Duplicates, and FILTER with the Filter tool from Session 5.</div>
+  </div>
+
+</main>
+
+<footer>
+  <span>Excel Functions Cheat Sheet — Data Analytics</span>
+  <span>Companion to Sessions 3–6 · Keep open while working</span>
+</footer>
+
+</body>
+</html>

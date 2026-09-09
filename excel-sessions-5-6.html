@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel for Data Handling — Sessions 5 & 6</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --paper:#FAFAF7;
+    --ink:#1E2521;
+    --ink-soft:#535E56;
+    --forest:#2D5F4C;
+    --forest-deep:#1E4436;
+    --amber:#C6862F;
+    --grid:#DCE1D8;
+    --grid-strong:#B9C2B4;
+    --white:#FFFFFF;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    color:var(--forest-deep);
+    margin:0;
+  }
+  code, .formula, .kbd{
+    font-family:'IBM Plex Mono',monospace;
+  }
+  a{color:var(--forest);}
+
+  .formula-bar{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border-bottom:1px solid var(--grid-strong);
+    background:var(--white);
+    padding:10px 24px;
+    position:sticky;
+    top:0;
+    z-index:20;
+  }
+  .name-box{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--forest-deep);
+    background:var(--paper);
+    border:1px solid var(--grid-strong);
+    border-radius:3px;
+    padding:4px 10px;
+    min-width:64px;
+    text-align:center;
+  }
+  .fx{
+    font-family:'IBM Plex Mono',monospace;
+    font-style:italic;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+  .formula-bar .content-line{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+    flex:1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .hero{
+    padding:56px 24px 40px;
+    max-width:920px;
+    margin:0 auto;
+  }
+  .hero .col-row-frame{
+    display:grid;
+    grid-template-columns:32px 1fr;
+    border:1px solid var(--grid-strong);
+  }
+  .hero .colhead{
+    grid-column:2;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    background:var(--forest);
+  }
+  .hero .colhead span{
+    color:#EDEFE9;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    text-align:center;
+    padding:5px 0;
+    border-right:1px solid rgba(255,255,255,0.15);
+  }
+  .hero .rownum{
+    background:var(--forest);
+    color:#EDEFE9;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .hero .body-cell{
+    padding:28px 30px 34px;
+    border-top:1px solid var(--grid-strong);
+  }
+  .hero h1{
+    font-size:clamp(28px,4vw,40px);
+    line-height:1.15;
+    margin-bottom:12px;
+  }
+  .hero p{
+    color:var(--ink-soft);
+    font-size:16px;
+    max-width:58ch;
+    margin:0 0 18px;
+  }
+  .hero .tags{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .hero .tags span{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--forest-deep);
+    border:1px solid var(--grid-strong);
+    border-radius:3px;
+    padding:3px 9px;
+    background:var(--paper);
+  }
+
+  .tabs{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 24px;
+    display:flex;
+    gap:2px;
+  }
+  .tab{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    padding:10px 22px;
+    background:var(--grid);
+    color:var(--ink-soft);
+    border:1px solid var(--grid-strong);
+    border-bottom:none;
+    border-radius:6px 6px 0 0;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .tab.active{
+    background:var(--white);
+    color:var(--forest-deep);
+    border-bottom:1px solid var(--white);
+    margin-bottom:-1px;
+  }
+  .tab:hover:not(.active){background:#E5E9E2;}
+
+  .sheet{
+    max-width:920px;
+    margin:0 auto;
+    background:var(--white);
+    border:1px solid var(--grid-strong);
+    border-radius:0 6px 6px 6px;
+    padding:8px 0 40px;
+  }
+  .sheet-panel{display:none;}
+  .sheet-panel.active{display:block;}
+
+  .cellblock{
+    display:grid;
+    grid-template-columns:56px 1fr;
+    border-top:1px solid var(--grid);
+  }
+  .cellblock:first-child{border-top:none;}
+  .addr{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--amber);
+    padding:26px 0 0;
+    text-align:center;
+    border-right:1px solid var(--grid);
+    background:#FCFBF8;
+  }
+  .cellblock .body{
+    padding:24px 30px 30px;
+  }
+  .cellblock h2{
+    font-size:21px;
+    margin-bottom:10px;
+  }
+  .cellblock p{margin:0 0 12px; color:var(--ink);}
+  .cellblock ul, .cellblock ol{
+    margin:0 0 14px;
+    padding-left:20px;
+  }
+  .cellblock li{margin-bottom:6px;}
+
+  .callout{
+    background:#F2F6F0;
+    border-left:3px solid var(--forest);
+    padding:12px 16px;
+    border-radius:0 4px 4px 0;
+    margin:14px 0;
+    font-size:14.5px;
+  }
+  .callout strong{color:var(--forest-deep);}
+
+  .warn{
+    background:#FBF1EC;
+    border-left:3px solid #B5502E;
+    padding:12px 16px;
+    border-radius:0 4px 4px 0;
+    margin:14px 0;
+    font-size:14.5px;
+  }
+  .warn strong{color:#B5502E;}
+
+  table.ref{
+    width:100%;
+    border-collapse:collapse;
+    margin:14px 0 18px;
+    font-size:14px;
+  }
+  table.ref th{
+    text-align:left;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12px;
+    color:var(--forest-deep);
+    background:var(--paper);
+    border:1px solid var(--grid-strong);
+    padding:8px 10px;
+  }
+  table.ref td{
+    border:1px solid var(--grid);
+    padding:8px 10px;
+    vertical-align:top;
+  }
+  table.ref td .formula, table.ref td code{
+    color:var(--forest-deep);
+    background:#F2F6F0;
+    padding:1px 5px;
+    border-radius:3px;
+  }
+
+  .kbd{
+    display:inline-block;
+    background:#F2F1EC;
+    border:1px solid var(--grid-strong);
+    border-bottom-width:2px;
+    border-radius:4px;
+    padding:1px 7px;
+    font-size:12.5px;
+    color:var(--ink);
+  }
+
+  .formula-block{
+    background:var(--forest-deep);
+    color:#EAF0EA;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:14px;
+    padding:12px 16px;
+    border-radius:5px;
+    margin:12px 0;
+    overflow-x:auto;
+  }
+  .formula-block .amber{color:#E3B168;}
+  .formula-block .grey{color:#9AB0A0;}
+
+  .practice{
+    background:#FCF7EE;
+    border:1px solid #E9D3A8;
+    border-radius:6px;
+    padding:20px 22px;
+    margin-top:6px;
+  }
+  .practice h3{
+    font-size:15px;
+    color:var(--amber);
+    margin-bottom:10px;
+  }
+  .practice ol{margin:0; padding-left:20px;}
+  .practice li{margin-bottom:8px; font-size:14.5px;}
+
+  footer{
+    max-width:920px;
+    margin:30px auto 60px;
+    padding:0 24px;
+    color:var(--ink-soft);
+    font-size:13px;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  @media (max-width:640px){
+    .cellblock{grid-template-columns:36px 1fr;}
+    .addr{font-size:10px;padding-top:20px;}
+    .cellblock .body{padding:18px 16px 24px;}
+    .hero .body-cell{padding:20px 18px 26px;}
+    .tabs{padding:0 12px;}
+    .sheet{border-radius:0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="formula-bar">
+  <div class="name-box">C1</div>
+  <div class="fx">fx</div>
+  <div class="content-line">Excel for Data Handling — Session 5: Data Cleaning · Session 6: Lookup Functions</div>
+</div>
+
+<div class="hero">
+  <div class="col-row-frame">
+    <div></div>
+    <div class="colhead"><span>C · Cleaning</span><span>D · Lookups</span></div>
+    <div class="rownum">1</div>
+    <div class="body-cell">
+      <h1>Data Cleaning & Lookup Functions</h1>
+      <p>Real spreadsheets rarely arrive ready to analyze. Session 5 turns messy, inconsistent data into something usable; Session 6 teaches you to pull matching information across separate tables — the two skills that make Excel useful for actual work rather than toy examples.</p>
+      <div class="tags">
+        <span>Remove Duplicates</span>
+        <span>TRIM · Flash Fill</span>
+        <span>VLOOKUP · XLOOKUP</span>
+        <span>INDEX-MATCH</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-target="session5">Session 5 · Data Cleaning</div>
+  <div class="tab" data-target="session6">Session 6 · Lookup Functions</div>
+</div>
+
+<div class="sheet">
+
+  <!-- SESSION 5 -->
+  <div class="sheet-panel active" id="session5">
+
+    <div class="cellblock">
+      <div class="addr">C1</div>
+      <div class="body">
+        <h2>Remove Duplicates</h2>
+        <p>When the same record appears more than once — a customer entered twice, an order pasted in twice — Excel can find and delete the repeats automatically.</p>
+        <ol>
+          <li>Click any cell inside your data range.</li>
+          <li>Go to <strong>Data tab → Remove Duplicates</strong>.</li>
+          <li>Choose which columns must match for a row to count as a duplicate — Excel only deletes a row if <em>every checked column</em> matches another row exactly.</li>
+          <li>Excel reports how many duplicate values it removed and how many unique values remain.</li>
+        </ol>
+        <div class="warn"><strong>Before you run it:</strong> this deletes rows permanently once you close without undo. Copy your raw data to a backup sheet first, or duplicate the whole worksheet, so you always have the original to fall back on.</div>
+        <div class="callout"><strong>Why duplicates hide:</strong> "John Smith" and "John Smith " (trailing space) look identical but Excel treats them as different text — which is exactly why TRIM (next) usually runs <em>before</em> Remove Duplicates, not after.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">C2</div>
+      <div class="body">
+        <h2>TRIM and other text-cleaning functions</h2>
+        <p>Data copied from emails, PDFs, or web pages often carries invisible extra spaces or inconsistent capitalization. These functions fix that without retyping anything.</p>
+        <table class="ref">
+          <tr><th>Function</th><th>Syntax</th><th>What it fixes</th></tr>
+          <tr><td>TRIM</td><td><code>=TRIM(A2)</code></td><td>Removes leading/trailing spaces and collapses multiple spaces between words to one</td></tr>
+          <tr><td>CLEAN</td><td><code>=CLEAN(A2)</code></td><td>Strips non-printing characters often pasted in from other systems</td></tr>
+          <tr><td>PROPER</td><td><code>=PROPER(A2)</code></td><td>Capitalizes the first letter of each word — "john smith" → "John Smith"</td></tr>
+          <tr><td>UPPER / LOWER</td><td><code>=UPPER(A2)</code> / <code>=LOWER(A2)</code></td><td>Forces all-caps or all-lowercase, useful before comparing two text columns</td></tr>
+        </table>
+        <div class="formula-block">=TRIM(PROPER(A2))&nbsp;&nbsp;<span class="grey">// clean spacing and capitalization in one step</span></div>
+        <div class="callout"><strong>Workflow:</strong> write the cleaning formula in a new column next to the messy one, check the results, then paste the new column back as <em>values</em> (<span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">V</span> → Values Only) before deleting the original messy column.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">C3</div>
+      <div class="body">
+        <h2>Flash Fill</h2>
+        <p>Flash Fill watches a pattern you start typing and completes the rest of the column automatically — no formula required. It's best for splitting, combining, or reformatting text based on an example.</p>
+        <ol>
+          <li>In the column next to your messy data, type the result you want for the <em>first</em> row by hand.</li>
+          <li>Start typing the second row — Excel usually suggests the rest of the column in grey text.</li>
+          <li>Press <span class="kbd">Enter</span> to accept, or trigger it manually with <span class="kbd">Ctrl</span>+<span class="kbd">E</span>.</li>
+        </ol>
+        <table class="ref">
+          <tr><th>You have</th><th>You type</th><th>Flash Fill produces</th></tr>
+          <tr><td>Priya Sharma</td><td>Priya (first name only)</td><td>Extracts first names down the column</td></tr>
+          <tr><td>priya@mail.com</td><td>priya</td><td>Extracts text before the @ down the column</td></tr>
+          <tr><td>9876543210</td><td>987-654-3210</td><td>Reformats every phone number the same way</td></tr>
+        </table>
+        <div class="warn"><strong>Limitation:</strong> Flash Fill results are static values, not live formulas — if the source data changes, Flash Fill does not update automatically. Re-run it if the source changes.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">C4</div>
+      <div class="body">
+        <h2>Text-to-Columns</h2>
+        <p>Use this when one column actually contains several pieces of data squeezed together — like "Hyderabad, Telangana" or "Rao, Priya" — and you need them split into separate columns.</p>
+        <ol>
+          <li>Select the column you want to split.</li>
+          <li>Go to <strong>Data tab → Text to Columns</strong>.</li>
+          <li>Choose <strong>Delimited</strong> (splits on a character like a comma or space) or <strong>Fixed Width</strong> (splits at fixed character positions).</li>
+          <li>Pick the delimiter — comma, space, tab — and preview the split before confirming.</li>
+          <li>Choose a destination cell so you don't accidentally overwrite adjacent columns.</li>
+        </ol>
+        <div class="callout"><strong>Common use:</strong> splitting a "City, State" column into two separate columns so you can sort or filter by State alone.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">C5</div>
+      <div class="body">
+        <h2>Sort</h2>
+        <p>Sorting reorders rows based on the values in one or more columns — essential for spotting outliers, ranking results, or just making a table easier to scan.</p>
+        <ul>
+          <li>Quick sort: click any cell in the column, then <strong>Data tab → Sort A→Z / Z→A</strong>.</li>
+          <li>Multi-level sort: <strong>Data tab → Sort</strong> opens a dialog where you can sort by Region first, then by Revenue within each region, using "Add Level."</li>
+          <li>Excel automatically expands the selection to keep whole rows together — always confirm "My data has headers" is checked so the header row itself doesn't get sorted into the data.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">C6</div>
+      <div class="body">
+        <h2>Filter</h2>
+        <p>Filtering hides rows that don't match a condition, without deleting anything — the data is still there, just temporarily out of view.</p>
+        <ol>
+          <li>Click any cell in your table, then <strong>Data tab → Filter</strong> (or <span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">L</span>).</li>
+          <li>Dropdown arrows appear on each header — click one to check/uncheck values, or use "Text Filters" / "Number Filters" for conditions like "greater than" or "contains."</li>
+          <li>Filtered-out row numbers turn blue to remind you rows are hidden, not gone.</li>
+          <li>Clear a filter from the same dropdown, or <strong>Data tab → Clear</strong> to reset every filter at once.</li>
+        </ol>
+        <div class="callout"><strong>Filter vs. Sort:</strong> Sort changes row order permanently; Filter only changes what's visible. Use Filter first to isolate what you want to look at, then Sort within that view if needed.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">C7</div>
+      <div class="body">
+        <h2>Practice activity: clean messy customer data</h2>
+        <div class="practice">
+          <h3>Do this before Session 6</h3>
+          <ol>
+            <li>Create a new sheet named <strong>Customers (Raw)</strong>. Enter 15 customer rows with columns: <code>Name</code>, <code>Email</code>, <code>City, State</code> (combined in one cell), <code>Phone</code>. Deliberately mess it up: add extra spaces, inconsistent capitalization (some ALL CAPS, some lowercase), and duplicate 2–3 rows exactly.</li>
+            <li>Copy the sheet to a new tab named <strong>Customers (Clean)</strong> — never clean data on top of your only copy.</li>
+            <li>On the Clean tab, add a helper column using TRIM and PROPER to fix the Name column, then paste it back as values.</li>
+            <li>Use Text-to-Columns (or Flash Fill) to split "City, State" into two separate columns.</li>
+            <li>Use Flash Fill to reformat every Phone number into a consistent pattern.</li>
+            <li>Run Remove Duplicates on the full row to eliminate the repeated customers, and note how many were removed.</li>
+            <li>Sort the final table by State, then Filter to show only customers in one specific city.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SESSION 6 -->
+  <div class="sheet-panel" id="session6">
+
+    <div class="cellblock">
+      <div class="addr">D1</div>
+      <div class="body">
+        <h2>VLOOKUP</h2>
+        <p>VLOOKUP looks up a value in the <em>leftmost</em> column of a table and returns a value from the same row, a specified number of columns to the right. It's the classic function for pulling a product's price from a separate price list.</p>
+        <div class="formula-block">=VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])</div>
+        <div class="formula-block">=VLOOKUP(A2,Products!$A$2:$D$50,3,FALSE)&nbsp;&nbsp;<span class="grey">// find A2 in the Products table, return the 3rd column, exact match</span></div>
+        <table class="ref">
+          <tr><th>Argument</th><th>Meaning</th></tr>
+          <tr><td>lookup_value</td><td>The value you're searching for — e.g. a Product ID</td></tr>
+          <tr><td>table_array</td><td>The full table to search, with the lookup column as its leftmost column — lock with <code>$</code> so it doesn't shift when copied</td></tr>
+          <tr><td>col_index_num</td><td>Which column (counted from the left of table_array, starting at 1) holds the value you want returned</td></tr>
+          <tr><td>range_lookup</td><td><code>FALSE</code> = exact match (use this almost always); <code>TRUE</code> = approximate match, requires sorted data</td></tr>
+        </table>
+        <div class="warn"><strong>Key limitation:</strong> VLOOKUP can only look to the <em>right</em> of the lookup column, and breaks if someone inserts or deletes a column inside the table (the col_index_num no longer points where you expect).</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">D2</div>
+      <div class="body">
+        <h2>XLOOKUP</h2>
+        <p>XLOOKUP is the modern replacement for VLOOKUP — it can look in any direction, doesn't break when columns are inserted, and returns a clear result when nothing matches instead of an error.</p>
+        <div class="formula-block">=XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found])</div>
+        <div class="formula-block">=XLOOKUP(A2,Products!A:A,Products!C:C,"Not Found")&nbsp;&nbsp;<span class="grey">// search Product ID column, return the matching Price column</span></div>
+        <table class="ref">
+          <tr><th>Difference from VLOOKUP</th><th>Why it helps</th></tr>
+          <tr><td>Points directly at the lookup column and the return column separately</td><td>No column counting — and it still works if columns are added or reordered</td></tr>
+          <tr><td>Can look left as well as right</td><td>The value you want doesn't need to sit to the right of the value you're matching</td></tr>
+          <tr><td>Built-in <code>if_not_found</code> argument</td><td>Shows a clean message instead of a <code>#N/A</code> error when there's no match</td></tr>
+          <tr><td>Exact match by default</td><td>No need to remember to type FALSE</td></tr>
+        </table>
+        <div class="callout"><strong>Practical note:</strong> XLOOKUP is available in Excel 365 and Excel 2021+. If your workplace uses an older Excel version, INDEX-MATCH (next) is the fallback that works everywhere.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">D3</div>
+      <div class="body">
+        <h2>INDEX-MATCH</h2>
+        <p>INDEX-MATCH combines two functions to do what VLOOKUP does, without VLOOKUP's left-to-right restriction. MATCH finds the <em>position</em> of a value; INDEX returns the value at that position in another range.</p>
+        <div class="formula-block">=MATCH(lookup_value, lookup_array, 0)&nbsp;&nbsp;<span class="grey">// 0 = exact match; returns a row position, e.g. 7</span><br>=INDEX(return_array, row_number)&nbsp;&nbsp;<span class="grey">// returns the 7th value in return_array</span></div>
+        <p>Nested together, they become one lookup formula:</p>
+        <div class="formula-block">=INDEX(Products!C:C,MATCH(A2,Products!A:A,0))&nbsp;&nbsp;<span class="grey">// find A2's position in column A, return the matching value from column C</span></div>
+        <div class="callout"><strong>Why learn this if XLOOKUP exists?</strong> INDEX-MATCH works in every version of Excel ever made, and understanding it makes XLOOKUP's behavior easier to reason about — many workplaces still standardize on it for compatibility.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">D4</div>
+      <div class="body">
+        <h2>Combining data from multiple tables</h2>
+        <p>Lookup functions matter most when your data is split across sheets — a transactions sheet with just a Product ID, and a separate master sheet with product details — and you need to bring them together without copy-pasting by hand.</p>
+        <ol>
+          <li>Keep an ID column that exists identically in both tables (Product ID, Customer ID, Employee ID) — this is what you match on.</li>
+          <li>Never duplicate the full product/customer details into your transactions sheet — look them up instead, so a single price update in the master sheet updates every transaction automatically.</li>
+          <li>When pulling several fields (Name, Category, Price) from the same lookup, write one XLOOKUP or INDEX-MATCH per field, all matching on the same ID.</li>
+          <li>Watch for IDs that don't match due to formatting — a text ID <code>"1024"</code> won't match a numeric <code>1024</code>. TRIM and consistent formatting (Session 5) fix this before lookups run.</li>
+        </ol>
+        <div class="warn"><strong>Debugging tip:</strong> if a lookup returns <code>#N/A</code>, check for exact-match spelling, extra spaces in the ID column, or numbers stored as text — these cause the vast majority of lookup errors.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">D5</div>
+      <div class="body">
+        <h2>Practice activity: product lookup exercise</h2>
+        <div class="practice">
+          <h3>Build a two-table lookup workbook</h3>
+          <ol>
+            <li>Create a sheet named <strong>Products</strong> with columns: <code>Product ID</code>, <code>Product Name</code>, <code>Category</code>, <code>Unit Price</code>. Add 15–20 products.</li>
+            <li>Create a second sheet named <strong>Orders</strong> with columns: <code>Order ID</code>, <code>Product ID</code>, <code>Quantity</code>. Enter 20 orders, referencing Product IDs from the Products sheet — include at least one Product ID that does <em>not</em> exist in Products, to test error handling.</li>
+            <li>On Orders, add a <code>Product Name</code> column using VLOOKUP to pull from Products.</li>
+            <li>Add a <code>Unit Price</code> column using XLOOKUP, including an <code>if_not_found</code> message for the missing product.</li>
+            <li>Add a <code>Category</code> column using INDEX-MATCH instead, so you practice all three methods on the same data.</li>
+            <li>Add a <code>Line Total</code> column (Quantity × Unit Price) and sum it for a grand total.</li>
+            <li>Compare: which of the three lookup methods was easiest to write? Which would break first if someone inserted a new column into the Products sheet?</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <span>Excel for Data Handling — Session 5 & Session 6</span>
+  <span>Prerequisite: Sessions 3–4 · Tools: Microsoft Excel or equivalent spreadsheet software</span>
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.sheet-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.target).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
