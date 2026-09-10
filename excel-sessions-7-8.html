@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel for Data Handling — Sessions 7 & 8</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --paper:#FAFAF7; --ink:#1E2521; --ink-soft:#535E56;
+    --forest:#2D5F4C; --forest-deep:#1E4436; --amber:#C6862F;
+    --grid:#DCE1D8; --grid-strong:#B9C2B4; --white:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;font-weight:600;color:var(--forest-deep);margin:0;}
+  code, .formula, .kbd{font-family:'IBM Plex Mono',monospace;}
+  a{color:var(--forest);}
+
+  .formula-bar{display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--grid-strong);background:var(--white);padding:10px 24px;position:sticky;top:0;z-index:20;}
+  .name-box{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--forest-deep);background:var(--paper);border:1px solid var(--grid-strong);border-radius:3px;padding:4px 10px;min-width:64px;text-align:center;}
+  .fx{font-family:'IBM Plex Mono',monospace;font-style:italic;color:var(--ink-soft);font-size:14px;}
+  .formula-bar .content-line{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-soft);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  .hero{padding:56px 24px 40px;max-width:920px;margin:0 auto;}
+  .hero .col-row-frame{display:grid;grid-template-columns:32px 1fr;border:1px solid var(--grid-strong);}
+  .hero .colhead{grid-column:2;display:grid;grid-template-columns:repeat(2,1fr);background:var(--forest);}
+  .hero .colhead span{color:#EDEFE9;font-family:'IBM Plex Mono',monospace;font-size:12px;text-align:center;padding:5px 0;border-right:1px solid rgba(255,255,255,0.15);}
+  .hero .rownum{background:var(--forest);color:#EDEFE9;font-family:'IBM Plex Mono',monospace;font-size:12px;display:flex;align-items:center;justify-content:center;}
+  .hero .body-cell{padding:28px 30px 34px;border-top:1px solid var(--grid-strong);}
+  .hero h1{font-size:clamp(28px,4vw,40px);line-height:1.15;margin-bottom:12px;}
+  .hero p{color:var(--ink-soft);font-size:16px;max-width:58ch;margin:0 0 18px;}
+  .hero .tags{display:flex;gap:8px;flex-wrap:wrap;}
+  .hero .tags span{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--forest-deep);border:1px solid var(--grid-strong);border-radius:3px;padding:3px 9px;background:var(--paper);}
+
+  .tabs{max-width:920px;margin:0 auto;padding:0 24px;display:flex;gap:2px;}
+  .tab{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;padding:10px 22px;background:var(--grid);color:var(--ink-soft);border:1px solid var(--grid-strong);border-bottom:none;border-radius:6px 6px 0 0;cursor:pointer;transition:background .15s ease, color .15s ease;}
+  .tab.active{background:var(--white);color:var(--forest-deep);border-bottom:1px solid var(--white);margin-bottom:-1px;}
+  .tab:hover:not(.active){background:#E5E9E2;}
+
+  .sheet{max-width:920px;margin:0 auto;background:var(--white);border:1px solid var(--grid-strong);border-radius:0 6px 6px 6px;padding:8px 0 40px;}
+  .sheet-panel{display:none;}
+  .sheet-panel.active{display:block;}
+
+  .cellblock{display:grid;grid-template-columns:56px 1fr;border-top:1px solid var(--grid);}
+  .cellblock:first-child{border-top:none;}
+  .addr{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--amber);padding:26px 0 0;text-align:center;border-right:1px solid var(--grid);background:#FCFBF8;}
+  .cellblock .body{padding:24px 30px 30px;}
+  .cellblock h2{font-size:21px;margin-bottom:10px;}
+  .cellblock p{margin:0 0 12px; color:var(--ink);}
+  .cellblock ul, .cellblock ol{margin:0 0 14px;padding-left:20px;}
+  .cellblock li{margin-bottom:6px;}
+
+  .callout{background:#F2F6F0;border-left:3px solid var(--forest);padding:12px 16px;border-radius:0 4px 4px 0;margin:14px 0;font-size:14.5px;}
+  .callout strong{color:var(--forest-deep);}
+  .warn{background:#FBF1EC;border-left:3px solid #B5502E;padding:12px 16px;border-radius:0 4px 4px 0;margin:14px 0;font-size:14.5px;}
+  .warn strong{color:#B5502E;}
+
+  table.ref{width:100%;border-collapse:collapse;margin:14px 0 18px;font-size:14px;}
+  table.ref th{text-align:left;font-family:'Space Grotesk',sans-serif;font-size:12px;color:var(--forest-deep);background:var(--paper);border:1px solid var(--grid-strong);padding:8px 10px;}
+  table.ref td{border:1px solid var(--grid);padding:8px 10px;vertical-align:top;}
+  table.ref td .formula, table.ref td code{color:var(--forest-deep);background:#F2F6F0;padding:1px 5px;border-radius:3px;}
+  .table-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+  .kbd{display:inline-block;background:#F2F1EC;border:1px solid var(--grid-strong);border-bottom-width:2px;border-radius:4px;padding:1px 7px;font-size:12.5px;color:var(--ink);}
+
+  .practice{background:#FCF7EE;border:1px solid #E9D3A8;border-radius:6px;padding:20px 22px;margin-top:6px;}
+  .practice h3{font-size:15px;color:var(--amber);margin-bottom:10px;}
+  .practice ol{margin:0; padding-left:20px;}
+  .practice li{margin-bottom:8px; font-size:14.5px;}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0;}
+  .kpi-card{background:#F2F6F0;border:1px solid var(--grid-strong);border-radius:6px;padding:12px 14px;}
+  .kpi-card .klabel{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--forest-deep);text-transform:uppercase;letter-spacing:.02em;}
+  .kpi-card .kdesc{font-size:13px;color:var(--ink-soft);margin-top:4px;}
+
+  footer{max-width:920px;margin:30px auto 60px;padding:0 24px;color:var(--ink-soft);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+
+  @media (max-width:640px){
+    .cellblock{grid-template-columns:36px 1fr;}
+    .addr{font-size:10px;padding-top:20px;}
+    .cellblock .body{padding:18px 16px 24px;}
+    .hero .body-cell{padding:20px 18px 26px;}
+    .tabs{padding:0 12px;}
+    .sheet{border-radius:0;}
+    .kpi-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="formula-bar">
+  <div class="name-box">E1</div>
+  <div class="fx">fx</div>
+  <div class="content-line">Excel for Data Handling — Session 7: Data Analysis · Session 8: Dashboard Project</div>
+</div>
+
+<div class="hero">
+  <div class="col-row-frame">
+    <div></div>
+    <div class="colhead"><span>E · Analysis</span><span>F · Dashboard</span></div>
+    <div class="rownum">1</div>
+    <div class="body-cell">
+      <h1>Data Analysis & the Dashboard Project</h1>
+      <p>Session 7 turns a raw table into a summary anyone can read in seconds — PivotTables, PivotCharts, and Slicers. Session 8 pulls every skill from Sessions 3–7 into one deliverable: a single-screen, interactive dashboard built entirely from what you've already learned.</p>
+      <div class="tags">
+        <span>PivotTables</span>
+        <span>Slicers</span>
+        <span>KPI cards</span>
+        <span>Mini Project 1</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-target="session7">Session 7 · Data Analysis</div>
+  <div class="tab" data-target="session8">Session 8 · Dashboard Project</div>
+</div>
+
+<div class="sheet">
+
+  <!-- SESSION 7 -->
+  <div class="sheet-panel active" id="session7">
+
+    <div class="cellblock">
+      <div class="addr">E1</div>
+      <div class="body">
+        <h2>PivotTables</h2>
+        <p>A PivotTable summarizes hundreds or thousands of rows into a compact table you build by dragging fields around — no formulas required. It answers questions like "total revenue by region" or "average order size by product" in seconds.</p>
+        <ol>
+          <li>Click any cell inside your data, then <strong>Insert tab → PivotTable</strong>.</li>
+          <li>Confirm the data range and choose to place it on a New Worksheet.</li>
+          <li>In the Field List, drag a category field (e.g. Region) into <strong>Rows</strong>.</li>
+          <li>Drag a numeric field (e.g. Revenue) into <strong>Values</strong> — Excel defaults to Sum, but you can change it to Average, Count, Max, etc. by clicking the field and choosing "Value Field Settings."</li>
+          <li>Drag a second category field (e.g. Product) into <strong>Columns</strong> to cross-tabulate two dimensions at once.</li>
+        </ol>
+        <div class="callout"><strong>Mental model:</strong> Rows and Columns decide how the data is grouped; Values decides what's being calculated within each group. This maps directly to what SUMIF/SUMIFS did manually in Session 4 — a PivotTable is doing the same aggregation, just without you writing a formula per group.</div>
+        <div class="warn"><strong>Refreshing data:</strong> if the source data changes, the PivotTable does not update automatically. Right-click anywhere inside it and choose <strong>Refresh</strong>, or press <span class="kbd">Alt</span>+<span class="kbd">F5</span>.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">E2</div>
+      <div class="body">
+        <h2>PivotCharts</h2>
+        <p>A PivotChart is a chart built directly on top of a PivotTable — when you filter or drill into the table, the chart updates automatically along with it.</p>
+        <ol>
+          <li>Click inside an existing PivotTable, then <strong>PivotTable Analyze tab → PivotChart</strong>.</li>
+          <li>Choose a chart type — bar and column charts work well for comparing categories; line charts for trends over time.</li>
+          <li>The chart's field buttons let you filter directly from the chart itself, without going back to the table.</li>
+        </ol>
+        <div class="callout"><strong>Why not just a regular chart?</strong> A regular chart is built on a fixed range and needs manual updating if categories change. A PivotChart inherits the PivotTable's grouping and filtering, so it stays correct as the underlying data grows.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">E3</div>
+      <div class="body">
+        <h2>Slicers</h2>
+        <p>A Slicer is a clickable button panel that filters a PivotTable (or PivotChart) visually — instead of using the dropdown filter arrows, viewers click a button for the category they want to see.</p>
+        <ol>
+          <li>Click inside a PivotTable, then <strong>PivotTable Analyze tab → Insert Slicer</strong>.</li>
+          <li>Choose the field(s) to filter by — e.g. Region and Product.</li>
+          <li>Click any button on the Slicer to filter the connected table/chart instantly; hold <span class="kbd">Ctrl</span> to select multiple buttons at once.</li>
+          <li>To connect one Slicer to more than one PivotTable (so both update together), right-click the Slicer → <strong>Report Connections</strong> → check every table it should control.</li>
+        </ol>
+        <div class="callout"><strong>Why Slicers matter for dashboards:</strong> they're the interactive control that makes Session 8's dashboard possible — a non-technical viewer can explore the data by clicking, without ever touching a formula or filter dropdown.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">E4</div>
+      <div class="body">
+        <h2>Basic charts for reporting</h2>
+        <p>Choosing the right chart type matters more than making it look fancy — the goal is that a viewer understands the point in under five seconds.</p>
+        <table class="ref">
+          <tr><th>Chart type</th><th>Best for</th></tr>
+          <tr><td>Column / Bar</td><td>Comparing values across categories (Revenue by Region)</td></tr>
+          <tr><td>Line</td><td>Showing a trend over time (Monthly Sales)</td></tr>
+          <tr><td>Pie</td><td>Showing parts of a whole — use only with 5 or fewer categories</td></tr>
+          <tr><td>Stacked Column</td><td>Comparing totals while also showing what each total is made of</td></tr>
+        </table>
+        <ol>
+          <li>Select your data (including headers), then <strong>Insert tab → choose a chart type</strong>.</li>
+          <li>Use <strong>Chart Design tab → Add Chart Element</strong> to add axis titles, data labels, or a legend.</li>
+          <li>Right-click any chart → <strong>Select Data</strong> to change what it plots without rebuilding it.</li>
+        </ol>
+        <div class="warn"><strong>Common mistake:</strong> defaulting to a pie chart for everything. Pie charts become unreadable past 5–6 slices — a bar chart almost always communicates the same comparison more clearly.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">E5</div>
+      <div class="body">
+        <h2>Practice activity: sales summary report</h2>
+        <div class="practice">
+          <h3>Using your Sales data from Session 3–4</h3>
+          <ol>
+            <li>Build a PivotTable showing total Revenue by Region (Rows) and Product (Columns).</li>
+            <li>Add a second PivotTable on the same sheet showing average Unit Price by Product.</li>
+            <li>Insert a PivotChart (column chart) from the first PivotTable showing Revenue by Region.</li>
+            <li>Insert a Slicer for Region and connect it to both PivotTables using Report Connections, so filtering one filters both.</li>
+            <li>Click through the Slicer buttons and confirm both the table and the chart update together.</li>
+            <li>Add a title to the sheet: "Sales Summary Report" and format it clearly — this is the direct precursor to Session 8's dashboard.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SESSION 8 -->
+  <div class="sheet-panel" id="session8">
+
+    <div class="cellblock">
+      <div class="addr">F1</div>
+      <div class="body">
+        <h2>What makes a dashboard a dashboard</h2>
+        <p>A dashboard is a single screen that answers the most important questions about a dataset at a glance, and lets a viewer explore further by clicking — not scrolling through raw rows. Everything you've learned so far is a building block:</p>
+        <table class="ref">
+          <tr><th>Skill from earlier sessions</th><th>Role in the dashboard</th></tr>
+          <tr><td>Formulas & functions (Sessions 3–4)</td><td>Power the KPI numbers</td></tr>
+          <tr><td>Data cleaning (Session 5)</td><td>Makes sure the source data behind the dashboard is trustworthy</td></tr>
+          <tr><td>Lookups (Session 6)</td><td>Pull details across tables into one clean source range</td></tr>
+          <tr><td>PivotTables, charts, Slicers (Session 7)</td><td>Become the dashboard's visuals and interactive controls</td></tr>
+        </table>
+        <div class="callout"><strong>Rule of thumb:</strong> if a viewer has to scroll to see the answer to their question, it's not a dashboard yet — it's a report. Everything important should fit on one screen.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">F2</div>
+      <div class="body">
+        <h2>KPIs — picking the numbers that matter</h2>
+        <p>A KPI (Key Performance Indicator) is a single number that summarizes performance — Total Revenue, Average Order Value, Number of Orders. Good dashboards show 3–5 KPIs prominently at the top, before any chart.</p>
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="klabel">Total Revenue</div><div class="kdesc">=SUM of the Revenue column — the headline number</div></div>
+          <div class="kpi-card"><div class="klabel">Total Orders</div><div class="kdesc">=COUNTA of the Order ID column — scale of activity</div></div>
+          <div class="kpi-card"><div class="klabel">Avg. Order Value</div><div class="kdesc">=AVERAGE of Revenue — is revenue from many small orders or few large ones?</div></div>
+          <div class="kpi-card"><div class="klabel">Top Region</div><div class="kdesc">Region with MAX Revenue via SUMIF/PivotTable — where to focus attention</div></div>
+        </div>
+        <div class="callout"><strong>Picking good KPIs:</strong> each one should answer a question a manager would actually ask. If you can't say out loud <em>why</em> a number is on the dashboard, it probably shouldn't be there.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">F3</div>
+      <div class="body">
+        <h2>Layout and interactivity</h2>
+        <p>A dashboard's layout should guide the eye the same way every time: KPIs first, then the most important chart, then supporting detail and filters.</p>
+        <ol>
+          <li>Build a dedicated <strong>Dashboard</strong> sheet — never put charts and Slicers directly on top of raw data.</li>
+          <li>Place KPI cells across the top row, formatted large and bold, each with a short label above or below it.</li>
+          <li>Arrange 2–3 charts below the KPIs — PivotCharts if they need to respond to filtering.</li>
+          <li>Place Slicers along one edge (top or side) so they're easy to find, and connect them to every relevant PivotTable via Report Connections.</li>
+          <li>Turn off gridlines on the Dashboard sheet (<strong>View tab → uncheck Gridlines</strong>) so it reads like a report, not a spreadsheet.</li>
+          <li>Hide the raw data and helper PivotTable sheets from casual view (right-click the tab → Hide) so the Dashboard tab is what viewers see first.</li>
+        </ol>
+        <div class="warn"><strong>Keep KPI cells as formulas, not typed numbers:</strong> if they're linked to the data (via SUM, AVERAGE, or a PivotTable's GETPIVOTDATA), the whole dashboard updates when the source data changes — which is the entire point of building one.</div>
+      </div>
+    </div>
+
+    <div class="cellblock">
+      <div class="addr">F4</div>
+      <div class="body">
+        <h2>Mini Project 1: build the dashboard</h2>
+        <div class="practice">
+          <h3>Deliverable: one Dashboard sheet, built from your Session 3–7 workbook</h3>
+          <ol>
+            <li>Consolidate your Sales, Products, and Orders data into a single clean source range (apply Session 5–6 skills if anything is inconsistent).</li>
+            <li>Create a new sheet named <strong>Dashboard</strong> and turn off its gridlines.</li>
+            <li>Add 4 KPI cells across the top: Total Revenue, Total Orders, Average Order Value, and Top-Performing Region — each driven by a formula or PivotTable, not typed in.</li>
+            <li>Add a PivotChart showing Revenue by Region (column chart) and a second PivotChart showing Revenue by Product (bar chart).</li>
+            <li>Insert a Region Slicer and a Product Slicer; connect both to every PivotTable feeding the dashboard.</li>
+            <li>Format consistently: one accent color, one font, aligned KPI cards, and a clear title at the top of the sheet.</li>
+            <li>Test it: click through every Slicer button and confirm all KPIs and charts update together, with no broken references.</li>
+            <li>Hide the raw data and PivotTable working sheets so only the Dashboard and (optionally) a clean data sheet are visible.</li>
+          </ol>
+        </div>
+        <div class="callout"><strong>Evaluation focus for Mini Project 1:</strong> does every number on the dashboard update correctly when a Slicer is clicked? A dashboard with beautiful formatting but static numbers has missed the point of the entire course.</div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <span>Excel for Data Handling — Session 7 & Session 8</span>
+  <span>Prerequisite: Sessions 3–6 · Tools: Microsoft Excel or equivalent spreadsheet software</span>
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.sheet-panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.target).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
