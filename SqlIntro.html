@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Database & SQL — Session 1: Interactive Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #16241b;
+    --bg-deep: #0f1a14;
+    --paper: #ece5d0;
+    --paper-dim: #ddd3b3;
+    --ink: #26201a;
+    --ink-soft: #4a4030;
+    --brass: #a9762c;
+    --brass-bright: #c99a48;
+    --stamp: #8b3a3a;
+    --rule: #b9ac82;
+    --teal: #2f4c3c;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:
+      radial-gradient(ellipse at top, rgba(255,255,255,0.03), transparent 60%),
+      repeating-linear-gradient(180deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 1px, transparent 1px, transparent 3px);
+    color:var(--paper);
+    font-family:'Spectral', Georgia, serif;
+    line-height:1.6;
+  }
+  .mono{ font-family:'IBM Plex Mono', monospace; }
+
+  .spine{
+    position:fixed; left:0; top:0; bottom:0; width:6px;
+    background:linear-gradient(180deg, var(--brass), var(--teal) 40%, var(--brass) 100%);
+    opacity:0.55; z-index:5;
+  }
+
+  .wrap{ max-width:780px; margin:0 auto; padding:0 28px; }
+
+  /* COVER */
+  .cover{
+    min-height:85vh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:60px 24px; position:relative;
+  }
+  .cover-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.75rem; letter-spacing:0.14em; color:var(--brass-bright);
+    margin-bottom:20px; text-transform:uppercase;
+  }
+  .cover h1{
+    font-size:clamp(2.2rem, 5.5vw, 3.6rem);
+    font-weight:600; margin:0 0 18px; color:var(--paper);
+    max-width:16ch; line-height:1.15;
+  }
+  .cover h1 em{ font-style:italic; color:var(--brass-bright); font-weight:500; }
+  .cover p.sub{
+    max-width:48ch; color:#c9c0a2; font-size:1.1rem; margin:0 auto;
+  }
+  .stamp{
+    margin-top:36px; width:120px; height:120px; border-radius:50%;
+    border:3px solid var(--stamp); color:var(--stamp);
+    display:flex; align-items:center; justify-content:center;
+    transform:rotate(-10deg); opacity:0.88;
+    font-family:'IBM Plex Mono', monospace; font-size:0.65rem;
+    letter-spacing:0.08em; text-align:center; padding:10px; font-weight:600;
+  }
+
+  /* TIMELINE BAR */
+  .flow-bar{
+    background:rgba(236,229,208,0.06); border:1px solid rgba(185,172,130,0.25);
+    border-radius:4px; padding:20px; margin:40px 0;
+  }
+  .flow-title{ font-family:'IBM Plex Mono', monospace; font-size:0.85rem; color:var(--brass-bright); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:14px; }
+  .flow-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; }
+  .flow-step{ background:rgba(0,0,0,0.25); border-left:3px solid var(--brass); padding:8px 10px; border-radius:2px; }
+  .flow-time{ font-family:'IBM Plex Mono', monospace; font-size:0.7rem; color:var(--brass-bright); }
+  .flow-label{ font-size:0.82rem; color:var(--paper); font-weight:500; }
+
+  /* MODULE CHAPTERS */
+  .chapter{ padding:70px 0 30px; position:relative; }
+  .chapter + .chapter{ border-top:1px solid rgba(185,172,130,0.18); }
+  .time-badge{
+    display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:0.72rem;
+    color:var(--bg-deep); background:var(--brass-bright); padding:2px 8px; border-radius:2px;
+    font-weight:600; margin-bottom:12px;
+  }
+  .chapter h2{
+    font-size:clamp(1.5rem, 3.5vw, 2.1rem); font-weight:600; color:var(--paper);
+    margin:0 0 20px; max-width:24ch; line-height:1.25;
+  }
+  .chapter p{ color:#d7cfb4; font-size:1.05rem; max-width:64ch; margin:0 0 14px; }
+
+  /* CALLOUT & ACTIVITY BOXES */
+  .activity-box{
+    background:rgba(47,76,60,0.35); border:1px solid var(--teal);
+    border-left:4px solid var(--brass-bright); padding:18px 22px; border-radius:3px; margin:24px 0;
+  }
+  .activity-box .label{ font-family:'IBM Plex Mono', monospace; font-size:0.75rem; color:var(--brass-bright); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:6px; }
+  .activity-box p{ margin:0; color:var(--paper); font-size:1.02rem; font-style:italic; }
+
+  /* LEDGER CARDS */
+  .ledger{
+    background:var(--paper); color:var(--ink); border-radius:2px;
+    padding:24px 26px; margin:26px 0;
+    box-shadow:0 14px 35px rgba(0,0,0,0.35), 0 2px 0 var(--paper-dim);
+  }
+  .ledger h3{ margin:0 0 6px; font-size:1.05rem; color:var(--ink); font-family:'IBM Plex Mono', monospace; }
+  .ledger p{ color:var(--ink-soft); margin-bottom:10px; }
+
+  /* TABLES */
+  table.data{
+    width:100%; border-collapse:collapse; font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem; margin-top:10px;
+  }
+  table.data th, table.data td{
+    text-align:left; padding:9px 10px; border-bottom:1px solid var(--paper-dim); color:var(--ink);
+  }
+  table.data th{ background:rgba(169,118,44,0.14); font-weight:600; font-size:0.72rem; letter-spacing:0.04em; }
+  .pk{ color:var(--brass); font-weight:700; }
+  .fk{ color:var(--teal); font-weight:700; }
+
+  /* CODE BLOCK */
+  .sql-box{
+    background:#0d1611; border:1px solid rgba(185,172,130,0.25); border-radius:4px;
+    padding:18px 20px; font-family:'IBM Plex Mono', monospace; font-size:0.88rem;
+    color:#83a598; margin:20px 0; overflow-x:auto;
+  }
+  .sql-keyword{ color:#fb4934; font-weight:bold; }
+  .sql-string{ color:#b8bb26; }
+  .sql-comment{ color:#928374; font-style:italic; }
+
+  /* QUIZ & HOMEWORK */
+  .quiz-card{
+    background:rgba(236,229,208,0.05); border:1px solid rgba(185,172,130,0.22);
+    padding:18px; border-radius:4px; margin-bottom:14px;
+  }
+  .quiz-card h4{ margin:0 0 10px; font-family:'IBM Plex Mono', monospace; font-size:0.9rem; color:var(--brass-bright); }
+  .quiz-card ul{ margin:0; padding-left:20px; color:#c9c0a2; font-size:0.92rem; }
+  .quiz-card li{ margin-bottom:4px; }
+
+  .assignment-box{
+    background:var(--paper); color:var(--ink); border-radius:3px;
+    padding:28px; margin:30px 0; border-top:4px solid var(--stamp);
+  }
+  .assignment-box h3{ margin:0 0 10px; font-family:'IBM Plex Mono', monospace; color:var(--stamp); }
+
+  /* LISTS */
+  ul.styled-list, ol.styled-list{ padding-left:20px; color:#d7cfb4; margin-bottom:16px; }
+  ul.styled-list li, ol.styled-list li{ margin-bottom:8px; font-size:1.02rem; }
+  ul.styled-list li b, ol.styled-list li b{ color:var(--paper); }
+
+  .diagram-flow{
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap;
+    background:rgba(0,0,0,0.3); padding:16px 20px; border-radius:4px; margin:20px 0;
+    font-family:'IBM Plex Mono', monospace; font-size:0.82rem; color:var(--brass-bright); gap:8px;
+  }
+  .diagram-step{ background:rgba(236,229,208,0.08); padding:8px 12px; border-radius:3px; border:1px solid rgba(185,172,130,0.2); }
+  .diagram-arrow{ color:var(--paper-dim); font-weight:bold; }
+</style>
+</head>
+<body>
+
+<div class="spine"></div>
+
+<!-- COVER -->
+<section class="cover">
+  <div class="cover-eyebrow">Database &amp; SQL — Session 1 Curriculum</div>
+  <h1>From Files to Databases: How <em>SQL Speaks</em> to Data</h1>
+  <p class="sub">A complete 2-hour interactive walkthrough breaking down database fundamentals, relational tables, and first SQL queries into simple terms.</p>
+  <div class="stamp">SESSION 1<br>2 HOURS</div>
+</section>
+
+<div class="wrap">
+
+  <!-- TIMELINE OVERVIEW -->
+  <div class="flow-bar">
+    <div class="flow-title">2-Hour Class Roadmap</div>
+    <div class="flow-grid">
+      <div class="flow-step"><div class="flow-time">0–10 min</div><div class="flow-label">What is Data?</div></div>
+      <div class="flow-step"><div class="flow-time">10–30 min</div><div class="flow-label">Before Databases</div></div>
+      <div class="flow-step"><div class="flow-time">30–50 min</div><div class="flow-label">What is a Database?</div></div>
+      <div class="flow-step"><div class="flow-time">50–65 min</div><div class="flow-label">What is a DBMS?</div></div>
+      <div class="flow-step"><div class="flow-time">65–80 min</div><div class="flow-label">Relational Data &amp; Keys</div></div>
+      <div class="flow-step"><div class="flow-time">80–95 min</div><div class="flow-label">Why SQL?</div></div>
+      <div class="flow-step"><div class="flow-time">95–105 min</div><div class="flow-label">How SQL Works</div></div>
+      <div class="flow-step"><div class="flow-time">105–115 min</div><div class="flow-label">SQL Categories</div></div>
+      <div class="flow-step"><div class="flow-time">115–120 min</div><div class="flow-label">Recap &amp; Quiz</div></div>
+    </div>
+  </div>
+
+  <!-- MODULE 1 -->
+  <section class="chapter" id="mod1">
+    <span class="time-badge">0–10 min</span>
+    <h2>1. Introduction: What is Data?</h2>
+    <p>Data is simply recorded facts from daily life. Every modern action generates data—whether banking, shopping online, visiting a hospital, or posting on social media.</p>
+    
+    <ul class="styled-list">
+      <li><b>Structured Data:</b> Organized neatly into rows and columns (e.g., bank accounts, customer rosters).</li>
+      <li><b>Unstructured Data:</b> Free-form information without a fixed grid structure (e.g., audio, images, videos).</li>
+    </ul>
+
+    <div class="activity-box">
+      <div class="label">Icebreaker Question</div>
+      <p>"If Amazon has 500 million customers, where do you think all their customer and order information is stored?"</p>
+    </div>
+  </section>
+
+  <!-- MODULE 2 -->
+  <section class="chapter" id="mod2">
+    <span class="time-badge">10–30 min</span>
+    <h2>2. Before Databases: The File Era</h2>
+    <p>Information storage evolved through clear milestones:</p>
+    <p style="font-family:'IBM Plex Mono', monospace; font-size:0.85rem; color:var(--brass-bright);">
+      Paper Files → File System → Excel → Databases → Cloud Databases → Lakehouses
+    </p>
+
+    <p>Consider a raw customer file like <code>customers.csv</code>:</p>
+    <div class="ledger">
+      <h3>customers.csv</h3>
+      <table class="data">
+        <tr><th>ID</th><th>Name</th><th>City</th></tr>
+        <tr><td>101</td><td>Ravi</td><td>Hyderabad</td></tr>
+        <tr><td>102</td><td>Anu</td><td>Chennai</td></tr>
+        <tr><td>103</td><td>Rahul</td><td>Bangalore</td></tr>
+      </table>
+    </div>
+
+    <p>As organizations scale, basic file systems introduce six core problems:</p>
+    
+    <ul class="styled-list">
+      <li><b>1. Duplication:</b> Customer details get re-typed across 10 different departmental files.</li>
+      <li><b>2. Inconsistency:</b> File A lists Ravi in <i>Hyderabad</i>, while File B lists <i>Secunderabad</i>.</li>
+      <li><b>3. Search Difficulty:</b> Answering <i>"Find customers spending > ₹50,000"</i> requires reading millions of rows manually.</li>
+      <li><b>4. Concurrent Users:</b> When 100 employees attempt to write to one file simultaneously, data gets overwritten.</li>
+      <li><b>5. Security:</b> Restricted fields (passwords, credit cards) cannot be masked per user.</li>
+      <li><b>6. Reliability:</b> A single computer crash during a save operation corrupts the entire file.</li>
+    </ul>
+  </section>
+
+  <!-- MODULE 3 -->
+  <section class="chapter" id="mod3">
+    <span class="time-badge">30–50 min</span>
+    <h2>3. What is a Database?</h2>
+    <p>A <b>database</b> is an organized digital system designed to store, manage, retrieve, and safeguard large volumes of data efficiently.</p>
+
+    <div class="ledger">
+      <h3>Excel Spreadsheet vs. Database</h3>
+      <table class="data">
+        <tr><th>Feature</th><th>Excel</th><th>Database</th></tr>
+        <tr><td><b>Primary Design</b></td><td>Spreadsheet grid</td><td>Structured data management</td></tr>
+        <tr><td><b>Scale</b></td><td>Small human-scale tasks</td><td>Large-scale enterprise data</td></tr>
+        <tr><td><b>Concurrent Users</b></td><td>Limited single-user focus</td><td>Thousands simultaneously</td></tr>
+        <tr><td><b>Relationships</b></td><td>Manual VLOOKUP / copies</td><td>Automated schema links</td></tr>
+        <tr><td><b>Security Controls</b></td><td>Simple file password</td><td>Granular user permissions</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- MODULE 4 -->
+  <section class="chapter" id="mod4">
+    <span class="time-badge">50–65 min</span>
+    <h2>4. What is a DBMS?</h2>
+    <p>A <b>DBMS</b> (Database Management System) is the software layer controlling access to the underlying database.</p>
+
+    <div class="diagram-flow">
+      <div class="diagram-step">Books = Data</div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-step">Library = Database</div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-step">Librarian = DBMS</div>
+    </div>
+
+    <p>Popular industrial DBMS platforms include: <b>PostgreSQL, MySQL, Microsoft SQL Server, Oracle, and SQLite.</b></p>
+  </section>
+
+  <!-- MODULE 5 -->
+  <section class="chapter" id="mod5">
+    <span class="time-badge">65–80 min</span>
+    <h2>5. Relational Databases &amp; Keys</h2>
+    <p>In a <b>Relational Database</b>, data is organized into tables linked through shared key columns.</p>
+
+    <div class="ledger">
+      <h3>CUSTOMERS TABLE</h3>
+      <table class="data">
+        <tr><th>customer_id <span class="pk">(PK)</span></th><th>name</th><th>city</th></tr>
+        <tr><td>101</td><td>Ravi</td><td>Hyderabad</td></tr>
+        <tr><td>102</td><td>Anu</td><td>Chennai</td></tr>
+      </table>
+
+      <h3 style="margin-top:20px;">ORDERS TABLE</h3>
+      <table class="data">
+        <tr><th>order_id <span class="pk">(PK)</span></th><th>customer_id <span class="fk">(FK)</span></th><th>amount</th></tr>
+        <tr><td>5001</td><td>101</td><td>₹5,000</td></tr>
+        <tr><td>5002</td><td>101</td><td>₹2,000</td></tr>
+        <tr><td>5003</td><td>102</td><td>₹8,000</td></tr>
+      </table>
+    </div>
+
+    <ul class="styled-list">
+      <li><b>Row (Record):</b> A single horizontal record entry (e.g., Customer #101).</li>
+      <li><b>Column (Field):</b> A vertical attribute present for all rows (e.g., City).</li>
+      <li><b>Primary Key (PK):</b> A unique identifier assigned to every row in a table (e.g., <code>customer_id</code> in Customers).</li>
+      <li><b>Foreign Key (FK):</b> A column referencing the Primary Key of another table to connect them (e.g., <code>customer_id</code> in Orders).</li>
+    </ul>
+  </section>
+
+  <!-- MODULE 6 -->
+  <section class="chapter" id="mod6">
+    <span class="time-badge">80–95 min</span>
+    <h2>6. Why SQL? First Queries</h2>
+    <p><b>SQL</b> (Structured Query Language) allows you to ask questions directly in declarative commands.</p>
+
+    <div class="sql-box">
+      <span class="sql-comment">-- Goal: "Find all customers living in Hyderabad"</span><br>
+      <span class="sql-keyword">SELECT</span> * <br>
+      <span class="sql-keyword">FROM</span> customers <br>
+      <span class="sql-keyword">WHERE</span> city = <span class="sql-string">'Hyderabad'</span>;
+    </div>
+
+    <ul class="styled-list">
+      <li><b>SELECT:</b> What columns do I want to see? (<code>*</code> gets all columns).</li>
+      <li><b>FROM:</b> Which table holds the target records?</li>
+      <li><b>WHERE:</b> What filtering condition must be met?</li>
+    </ul>
+  </section>
+
+  <!-- MODULE 7 -->
+  <section class="chapter" id="mod7">
+    <span class="time-badge">95–105 min</span>
+    <h2>7. How SQL Actually Works</h2>
+    <p><b>SQL is NOT the database itself.</b> It is the standard language used to issue instructions to the DBMS software.</p>
+
+    <div class="diagram-flow">
+      <div class="diagram-step">User</div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-step">SQL Query</div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-step">DBMS Engine</div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-step">Database Files</div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-step">Data Result</div>
+    </div>
+  </section>
+
+  <!-- MODULE 8 -->
+  <section class="chapter" id="mod8">
+    <span class="time-badge">105–115 min</span>
+    <h2>8. SQL Command Categories</h2>
+    <p>SQL verbs are grouped into lightweight categories based on purpose:</p>
+
+    <div class="ledger">
+      <table class="data">
+        <tr><th>Category</th><th>Full Name</th><th>Purpose</th><th>Common Verbs</th></tr>
+        <tr><td><b>DQL</b></td><td>Data Query Language</td><td>Fetch / Read data</td><td><code>SELECT</code></td></tr>
+        <tr><td><b>DML</b></td><td>Data Manipulation Language</td><td>Modify row records</td><td><code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code></td></tr>
+        <tr><td><b>DDL</b></td><td>Data Definition Language</td><td>Define schema objects</td><td><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code></td></tr>
+        <tr><td><b>DCL / TCL</b></td><td>Control Languages</td><td>Manage permissions &amp; logs</td><td><code>GRANT</code>, <code>COMMIT</code></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- MODULE 9 -->
+  <section class="chapter" id="mod9">
+    <span class="time-badge">115–120 min</span>
+    <h2>9. Session Recap &amp; Mini Quiz</h2>
+    
+    <p><b>Quick Verbal Recap Questions:</b></p>
+    <ol class="styled-list">
+      <li>Why were databases invented over flat files?</li>
+      <li>What is the difference between a Database and a DBMS?</li>
+      <li>How does a Foreign Key link two tables?</li>
+      <li>What does <code>SELECT * FROM table WHERE condition;</code> perform?</li>
+    </ol>
+
+    <p><b>Mini Assessment:</b></p>
+    <div class="quiz-card">
+      <h4>Q1. Which issue does a database management system solve?</h4>
+      <ul>
+        <li>A. Data duplication</li>
+        <li>B. Unsafe simultaneous edits</li>
+        <li>C. Slow manual searches</li>
+        <li><b>D. All of the above (Correct)</b></li>
+      </ul>
+    </div>
+
+    <div class="quiz-card">
+      <h4>Q2. PostgreSQL is an example of:</h4>
+      <ul>
+        <li>A. A SQL query statement</li>
+        <li><b>B. A DBMS software system (Correct)</b></li>
+        <li>C. A physical computer file</li>
+        <li>D. An Excel plug-in</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- MODULE 10: ASSIGNMENT -->
+  <section class="chapter" id="mod10">
+    <span class="time-badge">Assignment</span>
+    <h2>10. Real-World Practical Homework</h2>
+    
+    <div class="assignment-box">
+      <h3>Task: Design a College Database Schema</h3>
+      <p>On paper, map out a logical database for a college:</p>
+      <ul class="styled-list" style="color:var(--ink-soft);">
+        <li><b>1. Define 4 Entities:</b> <i>Students, Courses, Teachers, Departments</i>.</li>
+        <li><b>2. Identify Attributes &amp; PKs:</b> List 3 columns for each table and mark the Primary Key.</li>
+        <li><b>3. Connect Relationships:</b> Draw foreign key pointers connecting tables (e.g., Department → Students).</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
+
